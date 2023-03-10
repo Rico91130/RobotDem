@@ -160,11 +160,32 @@ function initScenario(data) {
         return;
     }
 
-    /* On vérifie que les numéros de versions concordent */
-    if ((psl.xiti != null && psl.xiti.demarche != null && psl.xiti.demarche.version != null && psl.xiti.demarche.version != data.result.values[1][0]) || data.result.values[1][0] == "*") {
-        toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + psl.xiti.demarche.version, 5000);
-        return;
+    /* On vérifie que les numéros de versions concordent :
+     * - On vérifie l'utilisation du wildcard
+     * - via la version des scripts
+     * - autrement via le tag xiti
+     */
+    if (data.result.values[1][0] != "*") {
+
+        var currentVersionViaScript = [...document.querySelectorAll("script")].find(e => e.src.includes('psl.fonctions.js?version=')).src.split("=")[1];
+        var currentVersionViaXiti = (psl.xiti != null && psl.xiti.demarche != null && psl.xiti.demarche.version != null) ? psl.xiti.demarche.version : "";
+        
+        if (currentVersionViaScript == "" && currentVersionViaXiti == "") {
+            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : non identifiable", 5000);
+            return;                
+        }
+
+        if (currentVersionViaScript != "" && currentVersionViaScript != data.result.values[1][0]) {
+            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaScript, 5000);
+            return;                
+        } else if (currentVersionViaXiti != "" && currentVersionViaXiti != data.result.values[1][0]) {
+            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaXiti, 5000);
+            return;                
+        }
+
     }
+    
+
 
     /* Si tout est OK, on exécute le scénario */
     gapi.client.sheets.spreadsheets.values.get({
