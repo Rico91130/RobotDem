@@ -22,15 +22,10 @@ function loadScript(url, callback) {
 }
 
 function toastError(errTitle, errMsg, errDelay) {
-    $.toast({
-        heading: errTitle,
-        text: "<span style='font-size:14px'>" + errMsg + "</span>",
-        showHideTransition: 'fade',
-        icon: 'error',
-        hideAfter: (errDelay == undefined) ? false : errDelay,
-        allowToastClose: true,
-        position: 'top-right',
-    })
+    vNotify.error({
+        "text": errMsg,
+        "title" : errTitle
+    });
 }
 
 function init() {
@@ -294,12 +289,12 @@ function initAPIClient() {
 }
 
 loadScript('https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js', function () {
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js', function () {
+    loadScript('https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js', function () {
         var head = document.getElementsByTagName('head')[0];
         var link = document.createElement('link');
         link.rel = 'stylesheet';
         link.type = 'text/css';
-        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css';
+        link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
         link.media = 'all';
         head.appendChild(link);
 
