@@ -96,7 +96,7 @@ class Step {
     async execute() {
         console.log(this);
         /* On vérifie si il existe bien un item html */
-        if (this.getItem() != null) {
+        if (this.getItem() == null) {
             toastError("Erreur step #" + this.id, "L'objet DOM (" + this.selector + ")[" + this.index + "] n'a pas été trouvé");
         } else {
 
