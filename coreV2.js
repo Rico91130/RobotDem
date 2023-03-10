@@ -45,7 +45,7 @@ function init() {
 
     if ($("#modalLoading").length == 0) {
         $('<div id="modalLoading" style="display:none;text-align: center;">' +
-            '<img style="text-align:center;margin:auto;display:flex"  alt="" src="./ressources/spinner.gif" width="31" height="31"/>' +
+            '<img style="text-align:center;margin:auto;display:flex"  alt="" src="https://rico91130.github.io/RobotDem/ressources/spinner.gif" width="31" height="31"/>' +
             '<span id="modalLoadingMsgGlobal">Patientez, saisie de l\'étape ...<br/> <span style="font-style: italic;" id="modalLoadingMsgCustom"></span><br/><a style="display:none;color:#A07E9C;font-weight:bold" id="modalLoadingMsgNext" href="#" onclick="javascript:bypassStep()">Ca prend du temps...passer au champs suivant</a></span>' +
             '</div>').appendTo('body');
     }
