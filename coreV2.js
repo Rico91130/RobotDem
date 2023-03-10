@@ -99,7 +99,7 @@ class Step {
             toastError("Erreur step #" + this.id, "L'objet DOM (" + this.selector + ")[" + this.index + "] n'a pas été trouvé");
         } else {
 
-            $("#modalLoadingMsgCustom").text("id : " + this.id + " - " + this.display);
+            document.querySelector("#modalLoadingMsgCustom").innerHTML = "id : " + this.id + " - " + this.display;
             
             switch (this.type) {
                 case "checkbox":
@@ -129,9 +129,9 @@ class Step {
                     this.done = true;
                     break;
 
-                /* A revoir */
+                /* A revoir
                 case "asyncUploadV2":
-                    /* On affiche le file dialog, que si aucun fichier n'est chargé */
+
                     if (this.getItem().attr("class") == undefined || this.getItem().attr("class").indexOf("thHide") == -1) {
 
                         let _this = this;
@@ -154,6 +154,7 @@ class Step {
                         this.done = true;
                     }
                     break;
+                    */
             }
         }
     }
@@ -202,18 +203,14 @@ function initScenario(data) {
 }
 
 async function executeScenario(data) {
-    var stepId = $("p.current .number").text();
+    var stepId = document.querySelector("p.current .number").textContent
 
     document.querySelector("#modalLoading").style["display"] = "block";
 
-    if (stepId == "" && window.location.search.indexOf("PSL_TK") != -1) {
-        var JSONIndentedString = $("PRE")[0].innerHTML;
-        var JSONTD = JSON.parse(JSONIndentedString);
-        saveAsTextFile(window.location.hostname.split(".")[0] + "_" + JSONTD.numeroTeledemarche + ".txt", JSONIndentedString);
-    } else {
+    if (stepId != "") {
 
         // On vérifie que ce n'est pas la fin de la démarche, écran de captcha
-        if (stepId == "" && $("iframe[title='reCAPTCHA']").length > 0)
+        if (stepId == "" && document.querySelectorAll("iframe[title='reCAPTCHA']").length > 0)
             stepId = "END";
 
         // Chargement des objets étapes
@@ -317,16 +314,15 @@ function initAPIClient() {
     });
 }
 
-loadScript('https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js', function () {
-    loadScript('https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js', function () {
-        var head = document.getElementsByTagName('head')[0];
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.type = 'text/css';
-        link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
-        link.media = 'all';
-        head.appendChild(link);
+loadScript('https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js', function () {
+    var head = document.getElementsByTagName('head')[0];
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
+    link.media = 'all';
+    head.appendChild(link);
 
-        loadScript('https://apis.google.com/js/api.js', init);
-    });
+    loadScript('https://apis.google.com/js/api.js', init);
 });
+
