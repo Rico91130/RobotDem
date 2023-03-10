@@ -89,13 +89,14 @@ class Step {
     }
 
     getItem() {
-        return document.querySelectorAll(this.selector)[this.index];
+        var index = (this.index) ? this.index : 0;
+        return document.querySelectorAll(this.selector)[index];
     }
 
     async execute() {
         console.log(this);
         /* On vérifie si il existe bien un item html */
-        if (this.getItem().length == 0) {
+        if (this.getItem() != null) {
             toastError("Erreur step #" + this.id, "L'objet DOM (" + this.selector + ")[" + this.index + "] n'a pas été trouvé");
         } else {
 
