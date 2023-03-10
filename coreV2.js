@@ -24,7 +24,8 @@ function loadScript(url, callback) {
 function toastError(errTitle, errMsg, errDelay) {
     vNotify.error({
         "text": errMsg,
-        "title" : errTitle
+        "title" : errTitle,
+        "visibleDuration" : errDelay
     });
 }
 
