@@ -303,17 +303,6 @@ loadScript('https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js', f
         link.media = 'all';
         head.appendChild(link);
 
-        loadScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js', function () {
-            var head = document.getElementsByTagName('head')[0];
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css';
-            link.media = 'all';
-            head.appendChild(link);
-
-            loadScript('https://apis.google.com/js/api.js', init);
-
-        });
+        loadScript('https://apis.google.com/js/api.js', init);
     });
 });
