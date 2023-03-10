@@ -1,6 +1,6 @@
 // https://spreadsheets.google.com/feeds/cells/1saL1aPCRlGCaJIHo543D8xhyXqojgs2lTaMJ-oVVVKE/1/public/values?alt=json-in-script&callback=doData
 // https://developers.google.com/sheets/api/quickstart/js
-// https://kamranahmed.info/toast
+
 function loadScript(url, callback) {
     var script = document.createElement("script")
     script.type = "text/javascript";
@@ -283,20 +283,6 @@ function loadSteps(data) {
     }
     return steps;
 }
-
-function saveAsTextFile(filename, text) {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-
-    document.body.removeChild(element);
-}
-
 
 function initAPIClient() {
     gapi.client.init({
