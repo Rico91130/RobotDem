@@ -175,12 +175,7 @@ function initScenario(data) {
 async function executeScenario(data) {
     var stepId = $("p.current .number").text();
 
-    $("#modalLoading").css("display", "block");
-    $("#modalLoading").modal({
-        escapeClose: false,
-        clickClose: false,
-        showClose: false
-    });
+    document.querySelector("#modalLoading").style["display"] = "block";
 
     if (stepId == "" && window.location.search.indexOf("PSL_TK") != -1) {
         var JSONIndentedString = $("PRE")[0].innerHTML;
@@ -213,7 +208,7 @@ async function executeScenario(data) {
 
         for (var i = 0; i < steps.length; i++) {
 
-            $("#modalLoadingMsgNext").css("display", "none");
+            document.querySelector("#modalLoading").style["display"] = "none";
             _bypassStep = false;
 
             await new Promise(resolve => {
@@ -230,7 +225,7 @@ async function executeScenario(data) {
                 var interval = setInterval(function () {
                     if (Date.now() - timeoutStart > 5000 && !timeoutBypassProposed) {
                         timeoutBypassProposed = true;
-                        $("#modalLoadingMsgNext").css("display", "block");
+                        document.querySelector("#modalLoading").style["display"] = "block";
                     }
                     if (steps[i].done || _bypassStep) {
                         _bypassStep = false;
@@ -252,8 +247,7 @@ async function executeScenario(data) {
         }
     }
 
-    $("#modalLoading").css("display", "none");
-    $.modal.close();
+    document.querySelector("#modalLoading").style["display"] = "none";
 }
 
 function loadSteps(data) {
