@@ -39,8 +39,11 @@ function init() {
     gapi.load('client:auth2', initAPIClient);
 
 
-    if ($("#modalLoading").length == 0) {
-        $(`<div id="modalLoading" style="z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%">
+    if (document.querySelector("#modalLoading") == null) {
+        container = document.createElement("div");
+        container.style = "z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
+        container.innerHTML = `
+            <div id="modalLoading" style="">
                 <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
                     <img style="text-align:center;margin:auto;display:flex"  alt="" src="https://rico91130.github.io/RobotDem/ressources/spinner.gif" width="31" height="31"/>
                     <span id="modalLoadingMsgGlobal">Patientez, saisie de l\'étape ...<br/>
@@ -49,8 +52,10 @@ function init() {
                         <a style="display:none;color:#A07E9C;font-weight:bold" id="modalLoadingMsgNext" href="#" onclick="javascript:bypassStep()">Ca prend du temps...passer au champs suivant</a>
                     </span>
                 </div>
-            </div>`).appendTo('body');
+            </div>`;
+        document.body.appendChild(container);
     }
+
 }
 
 var _bypassStep = false;
