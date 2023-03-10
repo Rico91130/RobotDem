@@ -209,6 +209,7 @@ async function executeScenario(data) {
 
         for (var i = 0; i < steps.length; i++) {
 
+            document.querySelector("#modalLoadingMsgNext").style["display"] = "none";
             _bypassStep = false;
 
             await new Promise(resolve => {
@@ -225,7 +226,7 @@ async function executeScenario(data) {
                 var interval = setInterval(function () {
                     if (Date.now() - timeoutStart > 5000 && !timeoutBypassProposed) {
                         timeoutBypassProposed = true;
-                        document.querySelector("#modalLoading").style["display"] = "block";
+                        document.querySelector("#modalLoadingMsgNext").style["display"] = "block";
                     }
                     if (steps[i].done || _bypassStep) {
                         _bypassStep = false;
