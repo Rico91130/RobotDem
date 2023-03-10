@@ -89,7 +89,7 @@ class Step {
     }
 
     getItem() {
-        return $($(this.selector)[this.index]);
+        return document.querySelectorAll(this.selector)[this.index];
     }
 
     async execute() {
@@ -103,19 +103,19 @@ class Step {
             
             switch (this.type) {
                 case "checkbox":
-                    if (this.getItem().prop("checked") != (this.arguments == "TRUE")) {
+                    if (this.getItem().checked != (this.arguments == "TRUE")) {
                         this.getItem().click();
                     }
                     this.done = true;
                     break;
                 case "textbox":
                     this.getItem().click();
-                    if (!this.getItem().prop("disabled")) {
+                    if (!this.getItem().disabled) {
                         if (/^javascript:.*$/g.test(this.arguments)) {
                             var dynamicText = eval('(' + this.arguments.substr(11) + ')');
-                            this.getItem().val(dynamicText);
+                            this.getItem().value = dynamicText;
                         } else {
-                            this.getItem().val(this.arguments);
+                            this.getItem().value = this.arguments;
                         }
                     }
                     this.done = true;
@@ -128,6 +128,8 @@ class Step {
                     this.getItem().click();
                     this.done = true;
                     break;
+
+                /* A revoir */
                 case "asyncUploadV2":
                     /* On affiche le file dialog, que si aucun fichier n'est chargé */
                     if (this.getItem().attr("class") == undefined || this.getItem().attr("class").indexOf("thHide") == -1) {
