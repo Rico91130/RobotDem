@@ -214,7 +214,6 @@ async function executeScenario(data) {
 
         for (var i = 0; i < steps.length; i++) {
 
-            document.querySelector("#modalLoading").style["display"] = "none";
             _bypassStep = false;
 
             await new Promise(resolve => {
