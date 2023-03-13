@@ -130,6 +130,32 @@ class Step {
                     this.done = true;
                     break;
 
+                    
+                case "asyncUploadTMA":
+
+                    if (this.getItem().closest(".pslUploadZoneSaisie").style["display"] != "none") {
+
+                        let _this = this;
+
+                        $(window).focus();
+                        $(window).on("focus", function () {
+                            _this.windowFocus = true;
+                        });
+                        this.getItem().click();
+
+                        let interval = setInterval(function () {
+                            if (_this.windowFocus || this.getItem().closest(".pslUploadZoneSaisie").style["display"] == "none") {
+                                _this.done = true;
+                                clearInterval(interval);
+                            }
+                        }, 100);
+
+                    } else {
+                        this.done = true;
+                    }
+                    break;
+
+                    
                 case "asyncUploadV2":
 
                     if (this.getItem().attr("class") == undefined || this.getItem().attr("class").indexOf("thHide") == -1) {
