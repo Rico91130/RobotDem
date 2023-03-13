@@ -100,7 +100,7 @@ class Step {
         
         /* cas 2 : JSON */
         try {
-            this.args = JSON.parse(_args);
+               _args = JSON.parse(_args);
         } catch(e) {
         }
         
