@@ -74,7 +74,8 @@ class Step {
         "delay": 7,
         "argument1": 8,
         "argument2" : 9,
-        "display": 10
+        "argument3" : 10,
+        "display": 11
     };
 
     constructor(dataArr) {
@@ -149,7 +150,7 @@ class Step {
                     let _this = this;
                     let interval = setInterval(function () {
                         if (_this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion").length > 0) {
-                            _this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion")[_this.argument2].click();
+                            _this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion")[_this.argument3].click();
                             _this.done = true;
                             clearInterval(interval);
                         }
@@ -250,7 +251,7 @@ function initScenario(data) {
     /* Si tout est OK, on exécute le scénario */
     gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: window.sheetId,
-        range: window.scenario + '!A3:K' + (3 + window.maxRows)
+        range: window.scenario + '!A3:L' + (3 + window.maxRows)
     }).then(executeScenario);
 }
 
