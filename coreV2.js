@@ -250,7 +250,7 @@ function initScenario(data) {
     /* Si tout est OK, on exécute le scénario */
     gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: window.sheetId,
-        range: window.scenario + '!A3:J' + (3 + window.maxRows)
+        range: window.scenario + '!A3:K' + (3 + window.maxRows)
     }).then(executeScenario);
 }
 
