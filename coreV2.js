@@ -130,6 +130,31 @@ class Step {
                     this.done = true;
                     break;
 
+                case "autocomplete" : 
+                    this.getItem().click();
+                    if (!this.getItem().disabled) {
+                        if (/^javascript:.*$/g.test(this.arguments)) {
+                            var dynamicText = eval('(' + this.arguments.substr(11) + ')');
+                            this.getItem().value = dynamicText;
+                        } else {
+                            this.getItem().value = this.arguments;
+                        }
+                    }
+                    
+                    /* Déclenchement de l'autocomplete */
+                    this.getItem().dispatchEvent(new Event('input', {bubbles:true}));
+                    
+                    /* On attent le chargement de la liste de résultat */
+                    let _this = this;
+                    let interval = setInterval(function () {
+                        if (_this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion").length > 0) {
+                            _this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion")[0].click();
+                            _this.done = true;
+                            clearInterval(interval);
+                        }
+                    }, 100);
+                    
+                    break;
                     
                 case "asyncUploadTMA":
 
@@ -144,7 +169,7 @@ class Step {
                         this.getItem().click();
 
                         let interval = setInterval(function () {
-                            if (_this.windowFocus || this.getItem().closest(".pslUploadZoneSaisie").style["display"] == "none") {
+                            if (_this.windowFocus || _this.getItem().closest(".pslUploadZoneSaisie").style["display"] == "none") {
                                 _this.done = true;
                                 clearInterval(interval);
                             }
