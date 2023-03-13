@@ -163,7 +163,7 @@ class Step {
                             _this.done = true;
                             clearInterval(interval);
                         }
-                    }, 100);
+                    }, 500);
                     
                     break;
                     
