@@ -130,7 +130,6 @@ class Step {
                     this.done = true;
                     break;
 
-                /* A revoir
                 case "asyncUploadV2":
 
                     if (this.getItem().attr("class") == undefined || this.getItem().attr("class").indexOf("thHide") == -1) {
@@ -155,7 +154,7 @@ class Step {
                         this.done = true;
                     }
                     break;
-                    */
+
             }
         }
     }
