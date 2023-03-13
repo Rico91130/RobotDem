@@ -72,8 +72,9 @@ class Step {
         "selector": 5,
         "index": 6,
         "delay": 7,
-        "arguments": 8,
-        "display": 9
+        "argument1": 8,
+        "argument2" : 9,
+        "display": 10
     };
 
     constructor(dataArr) {
@@ -104,7 +105,7 @@ class Step {
             
             switch (this.type) {
                 case "checkbox":
-                    if (this.getItem().checked != (this.arguments == "TRUE")) {
+                    if (this.getItem().checked != (this.argument1 == "TRUE")) {
                         this.getItem().click();
                     }
                     this.done = true;
@@ -112,11 +113,11 @@ class Step {
                 case "textbox":
                     this.getItem().click();
                     if (!this.getItem().disabled) {
-                        if (/^javascript:.*$/g.test(this.arguments)) {
-                            var dynamicText = eval('(' + this.arguments.substr(11) + ')');
+                        if (/^javascript:.*$/g.test(this.argument1)) {
+                            var dynamicText = eval('(' + this.argument1.substr(11) + ')');
                             this.getItem().value = dynamicText;
                         } else {
-                            this.getItem().value = this.arguments;
+                            this.getItem().value = this.argument1;
                         }
                     }
                     this.done = true;
@@ -133,11 +134,11 @@ class Step {
                 case "autocomplete" : 
                     this.getItem().click();
                     if (!this.getItem().disabled) {
-                        if (/^javascript:.*$/g.test(this.arguments)) {
-                            var dynamicText = eval('(' + this.arguments.substr(11) + ')');
+                        if (/^javascript:.*$/g.test(this.argument1)) {
+                            var dynamicText = eval('(' + this.argument1.substr(11) + ')');
                             this.getItem().value = dynamicText;
                         } else {
-                            this.getItem().value = this.arguments;
+                            this.getItem().value = this.argument1;
                         }
                     }
                     
@@ -148,7 +149,7 @@ class Step {
                     let _this = this;
                     let interval = setInterval(function () {
                         if (_this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion").length > 0) {
-                            _this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion")[0].click();
+                            _this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion")[_this.argument2].click();
                             _this.done = true;
                             clearInterval(interval);
                         }
