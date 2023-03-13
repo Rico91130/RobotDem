@@ -72,10 +72,8 @@ class Step {
         "selector": 5,
         "index": 6,
         "delay": 7,
-        "argument1": 8,
-        "argument2" : 9,
-        "argument3" : 10,
-        "display": 11
+        "_rawArgs": 8,
+        "display": 9
     };
 
     constructor(dataArr) {
@@ -88,6 +86,26 @@ class Step {
                 });
             }
         }
+        
+        /*
+         * traitement spécifique pour les arguments
+         */
+        var _args = null;
+        
+        /* cas 1 : code javascript */
+        if (/^javascript:.*$/g.test(this._rawArgs))
+            _args = eval('(' + this._rawArgs.substr(11) + ')');
+        else
+            _args = this._rawArgs
+        
+        /* cas 2 : JSON */
+        try {
+            this.args = JSON.parse(_args);
+        } catch(e) {
+        }
+        
+        /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
+        this.args = {"value" : _args};
     }
 
     getItem() {
@@ -106,7 +124,7 @@ class Step {
             
             switch (this.type) {
                 case "checkbox":
-                    if (this.getItem().checked != (this.argument1 == "TRUE")) {
+                    if (this.getItem().checked != (this.args.value == "TRUE")) {
                         this.getItem().click();
                     }
                     this.done = true;
@@ -114,12 +132,7 @@ class Step {
                 case "textbox":
                     this.getItem().click();
                     if (!this.getItem().disabled) {
-                        if (/^javascript:.*$/g.test(this.argument1)) {
-                            var dynamicText = eval('(' + this.argument1.substr(11) + ')');
-                            this.getItem().value = dynamicText;
-                        } else {
-                            this.getItem().value = this.argument1;
-                        }
+                        this.getItem().value = this.args.value;
                     }
                     this.done = true;
                     break;
@@ -133,14 +146,11 @@ class Step {
                     break;
 
                 case "autocomplete" : 
+                    
+                    /* Traitement initial comme un textbox */
                     this.getItem().click();
                     if (!this.getItem().disabled) {
-                        if (/^javascript:.*$/g.test(this.argument1)) {
-                            var dynamicText = eval('(' + this.argument1.substr(11) + ')');
-                            this.getItem().value = dynamicText;
-                        } else {
-                            this.getItem().value = this.argument1;
-                        }
+                        this.getItem().value = this.args.searchString;
                     }
                     
                     /* Déclenchement de l'autocomplete */
@@ -149,8 +159,8 @@ class Step {
                     /* On attent le chargement de la liste de résultat */
                     let _this = this;
                     let interval = setInterval(function () {
-                        if (_this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion").length > 0) {
-                            _this.getItem().parentElement.querySelectorAll(".a11y-suggestions div[role=listbox] .a11y-suggestion")[_this.argument3].click();
+                        if (document.querySelectorAll(_this.args.dropdownItemSelector).length > 0) {
+                            document.querySelectorAll(_this.args.dropdownItemSelector)[_this.args.dropdownItemIndex].click();
                             _this.done = true;
                             clearInterval(interval);
                         }
