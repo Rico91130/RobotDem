@@ -96,11 +96,11 @@ class Step {
         if (/^javascript:.*$/g.test(this._rawArgs))
             _args = eval('(' + this._rawArgs.substr(11) + ')');
         else
-            _args = this._rawArgs
+            _args = this._rawArgs;
         
         /* cas 2 : JSON */
         try {
-               _args = JSON.parse(_args);
+            _args = JSON.parse(_args);
         } catch(e) {
         }
         
