@@ -100,12 +100,11 @@ class Step {
         
         /* cas 2 : JSON */
         try {
-            _args = JSON.parse(_args);
+            this.args = JSON.parse(_args);
         } catch(e) {
+            /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
+            this.args = {"value" : _args};
         }
-        
-        /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
-        this.args = {"value" : _args};
     }
 
     getItem() {
