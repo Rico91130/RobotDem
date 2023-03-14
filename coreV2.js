@@ -411,7 +411,7 @@ function loadScripts() {
 function getContext() {
 
     var stepId = document.querySelector("p.current .number");
-    if (stepId == null) {
+    if (stepId != null) {
         stepId = stepId.textContent;
     };
 
