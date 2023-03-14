@@ -17,6 +17,7 @@ async function initRoboDem() {
     }
 
     if (window.scenario == null || window.sheetId == null) {
+        var context = getContext();
         var demarcheCode = window.location.href.split("/").slice(4, 5);
         var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
         if (demarche.length == 0) {
@@ -276,24 +277,24 @@ function checkAndExecuteScenario(data) {
 
 async function executeScenario(data) {
 
-    var stepId = document.querySelector("p.current .number");
-    if (stepId == null) {
+    var context = getContext();
+
+    if (context.etape == null) {
         toastError("Erreur lors du chargement", "Etape de la démarche non reconnue", 5000);
         return;
     };
-    stepId = stepId.textContent;
 
     document.querySelector("#modalLoading").style["display"] = "block";
 
-    if (stepId != "") {
+    if (context.etape != "") {
 
         // On vérifie que ce n'est pas la fin de la démarche, écran de captcha
-        if (stepId == "" && document.querySelectorAll("iframe[title='reCAPTCHA']").length > 0)
-            stepId = "END";
+        if (context.etape == "" && document.querySelectorAll("iframe[title='reCAPTCHA']").length > 0)
+            context.etape = "END";
 
         // Chargement des objets étapes
-        console.log("Chargement des steps de l'étape " + stepId);
-        var steps = loadSteps(data).filter(x => x.step == stepId && x.actif == "TRUE")
+        console.log("Chargement des steps de l'étape " + context.etape);
+        var steps = loadSteps(data).filter(x => x.step == context.etape && x.actif == "TRUE")
 
         // Récupération des groupes d'exclusivité 
         var groupesExclusive = steps.filter(x => x.exclusif.length > 0).map(x => x.exclusif).filter((value, index, self) => self.indexOf(value) === index)
@@ -404,6 +405,21 @@ function loadScripts() {
             document.head.appendChild(script);
         }
     });
+}
+
+
+function getContext() {
+
+    var stepId = document.querySelector("p.current .number");
+    if (stepId == null) {
+        stepId = stepId.textContent;
+    };
+
+    return {
+        "etape" : stepId,
+        "connected" : document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
+        "demarche" : document.querySelector("h1[class=\"title-section\"]").textContent,
+    }
 }
 
 loadScripts('https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js',
