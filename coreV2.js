@@ -25,18 +25,6 @@ async function initRoboDem() {
         var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
         var discover = await response.json();
 
-        if (window.scenario == null || window.sheetId == null) {
-            var demarcheCode = window.location.href.split("/").slice(4, 5);
-            var demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
-            if (demarche.length == 0) {
-                toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
-                return;
-            }
-            demarche = demarche[0];
-            window.sheetId = demarche.sheet;
-            window.scenario = demarche.tab;
-        }
-
         window.maxRows = 200;
 
         if (document.querySelector("#modalLoading") == null) {
@@ -58,6 +46,18 @@ async function initRoboDem() {
         gapi.load('client:auth2', initAPIClient);
     }
     else {
+        if (window.scenario == null || window.sheetId == null) {
+            var demarcheCode = window.location.href.split("/").slice(4, 5);
+            var demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
+            if (demarche.length == 0) {
+                toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
+                return;
+            }
+            demarche = demarche[0];
+            window.sheetId = demarche.sheet;
+            window.scenario = demarche.tab;
+        }
+        
         loadScenario();
     }
 }
