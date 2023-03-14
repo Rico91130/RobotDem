@@ -9,8 +9,6 @@ function toastError(errTitle, errMsg, errDelay) {
     });
 }
 
-var discover = null;
-
 async function initRoboDem() {
 
     if (discover == null) {
@@ -23,7 +21,7 @@ async function initRoboDem() {
         head.appendChild(link);
 
         var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
-        discover = await response.json();
+        window.discover = await response.json();
 
         window.maxRows = 200;
 
@@ -48,7 +46,7 @@ async function initRoboDem() {
     else {
         if (window.scenario == null || window.sheetId == null) {
             var demarcheCode = window.location.href.split("/").slice(4, 5);
-            var demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
+            var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
             if (demarche.length == 0) {
                 toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
                 return;
