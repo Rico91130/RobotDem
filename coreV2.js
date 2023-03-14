@@ -12,7 +12,7 @@ function toastError(errTitle, errMsg, errDelay) {
 async function initRoboDem() {
 
     if (window.discover == null) {
-        var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
+        var response = await fetch('https://rico91130.github.io/RobotDem/discover.json?' + (new Date()).getTime());
         window.discover = await response.json();
     }
 
