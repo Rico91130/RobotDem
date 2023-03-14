@@ -20,13 +20,45 @@ async function initRoboDem() {
         var context = getContext();
         var demarcheCode = window.location.href.split("/").slice(4, 5);
         var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
+
         if (demarche.length == 0) {
             toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
             return;
         }
+
         demarche = demarche[0];
-        window.sheetId = demarche.sheet;
-        window.scenario = demarche.tab;
+
+        if (Array.isArray(demarche)) {
+            var rules = demarche;
+            var selectedRule = null;
+            while (selectedRule == null && rules > 0) {
+                rule = rules.shift();
+                if (rule.conditions == null) {
+                    selectedRule = rule;
+                }
+                else {
+                    var conditionsOK = false;
+                    try {
+                        var conditionsOK = eval('(' + rule.conditions + ')');
+                    } catch (e) {
+
+                    }
+                    if (conditionsOK)
+                        selectedRule = rule;
+                }
+            }
+            if (selectedRule) {
+                window.sheetId = selectedRule.sheet;
+                window.scenario = selectedRule.tab;
+            } else {
+                toastError("Erreur lors du chargement", "Impossible d'identifier un scénario d'exécution", 5000);
+                return;
+            }
+        } else {
+            window.sheetId = demarche.sheet;
+            window.scenario = demarche.tab;
+        }
+
     }
 
     if (document.querySelector("#modalLoading") == null) {
@@ -47,7 +79,7 @@ async function initRoboDem() {
 
     if (window.gapiLoaded) {
         loadScenario();
-    } else {        
+    } else {
         window.gapiLoaded = true;
         window.maxRows = 200;
 
@@ -149,7 +181,7 @@ class Step {
                     this.getItem().click();
                     this.done = true;
                     break;
-                case "select" : 
+                case "select":
                     /* Récupération de la value par le text */
                     var options = [...this.getItem().querySelectorAll("option")].filter(option => option.text == this.args.value).map(option => option.value);
                     if (options.length == 1) {
@@ -416,9 +448,9 @@ function getContext() {
     };
 
     return {
-        "etape" : stepId,
-        "connected" : document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
-        "demarche" : document.querySelector("h1[class=\"title-section\"]").textContent,
+        "etape": stepId,
+        "connected": document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
+        "demarche": document.querySelector("h1[class=\"title-section\"]").textContent,
     }
 }
 
