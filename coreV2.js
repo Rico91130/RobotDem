@@ -25,8 +25,7 @@ async function init() {
     if (window.scenario == null || window.sheetId == null) {
         var demarcheCode = window.location.href.split("/").slice(4,5);
         var demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
-        console.log(demarche);
-        if (demarche.lengh == 0)
+        if (demarche.length == 0)
         {
             toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
             return;
