@@ -264,8 +264,15 @@ function initScenario(data) {
 }
 
 async function executeScenario(data) {
-    var stepId = document.querySelector("p.current .number").textContent
-
+    
+    var stepId = document.querySelector("p.current .number");
+    if (stepId == null)
+    {
+        toastError("Erreur lors du chargement", "Etape de la démarche non reconnue", 5000);
+        return;
+    };
+    steId = stepId.textContent;
+    
     document.querySelector("#modalLoading").style["display"] = "block";
 
     if (stepId != "") {
