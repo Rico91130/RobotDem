@@ -1,35 +1,28 @@
 // https://spreadsheets.google.com/feeds/cells/1saL1aPCRlGCaJIHo543D8xhyXqojgs2lTaMJ-oVVVKE/1/public/values?alt=json-in-script&callback=doData
 // https://developers.google.com/sheets/api/quickstart/js
 
-function loadScript(url, callback) {
-    var script = document.createElement("script")
-    script.type = "text/javascript";
-    if (script.readyState) { // only required for IE <9
-        script.onreadystatechange = function () {
-            if (script.readyState === "loaded" || script.readyState === "complete") {
-                script.onreadystatechange = null;
-                callback();
-            }
-        };
-    } else { //Others
-        script.onload = function () {
-            callback();
-        };
-    }
-
-    script.src = url;
-    document.getElementsByTagName("head")[0].appendChild(script);
-}
-
 function toastError(errTitle, errMsg, errDelay) {
     vNotify.error({
         "text": errMsg,
-        "title" : errTitle,
-        "visibleDuration" : errDelay
+        "title": errTitle,
+        "visibleDuration": errDelay
     });
 }
 
-function init() {
+async function init() {
+
+    var head = document.getElementsByTagName('head')[0];
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
+    link.media = 'all';
+    head.appendChild(link);
+
+    const response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
+    const json = await response.json();
+    console.log(json);
+
     if (window.scenario == null)
         window.scenario = "generic";
     if (window.sheetId == null)
@@ -86,24 +79,24 @@ class Step {
                 });
             }
         }
-        
+
         /*
          * traitement spécifique pour les arguments
          */
         var _args = null;
-        
+
         /* cas 1 : code javascript */
         if (/^javascript:.*$/g.test(this._rawArgs))
             _args = eval('(' + this._rawArgs.substr(11) + ')');
         else
             _args = this._rawArgs;
-        
+
         /* cas 2 : JSON */
         try {
             this.args = JSON.parse(_args);
-        } catch(e) {
+        } catch (e) {
             /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
-            this.args = {"value" : _args};
+            this.args = { "value": _args };
         }
     }
 
@@ -120,7 +113,7 @@ class Step {
         } else {
 
             document.querySelector("#modalLoadingMsgCustom").innerHTML = "id : " + this.id + " - " + this.display;
-            
+
             switch (this.type) {
                 case "checkbox":
                     if (this.getItem().checked != (this.args.value == "TRUE")) {
@@ -144,17 +137,17 @@ class Step {
                     this.done = true;
                     break;
 
-                case "autocomplete" : 
-                    
+                case "autocomplete":
+
                     /* Traitement initial comme un textbox */
                     this.getItem().click();
                     if (!this.getItem().disabled) {
                         this.getItem().value = this.args.searchString;
                     }
-                    
+
                     /* Déclenchement de l'autocomplete */
-                    this.getItem().dispatchEvent(new Event('input', {bubbles:true}));
-                    
+                    this.getItem().dispatchEvent(new Event('input', { bubbles: true }));
+
                     /* On attent le chargement de la liste de résultat */
                     let _this = this;
                     let interval = setInterval(function () {
@@ -164,9 +157,9 @@ class Step {
                             clearInterval(interval);
                         }
                     }, 200);
-                    
+
                     break;
-                    
+
                 case "asyncUploadTMA":
 
                     if (this.getItem().closest(".pslUploadZoneSaisie").style["display"] != "none") {
@@ -191,7 +184,7 @@ class Step {
                     }
                     break;
 
-                    
+
                 case "asyncUploadV2":
 
                     if (this.getItem().attr("class") == undefined || this.getItem().attr("class").indexOf("thHide") == -1) {
@@ -222,7 +215,6 @@ class Step {
     }
 }
 
-
 function initScenario(data) {
     /* On vérifie qu'on est bien sur la page de la démarche */
     if (window.location.href.indexOf(data.result.values[0][0]) == -1) {
@@ -239,22 +231,22 @@ function initScenario(data) {
 
         var currentVersionViaScript = [...document.querySelectorAll("script")].find(e => e.src.includes('psl.fonctions.js?version=')).src.split("=")[1];
         var currentVersionViaXiti = (psl.xiti != null && psl.xiti.demarche != null && psl.xiti.demarche.version != null) ? psl.xiti.demarche.version : "";
-        
+
         if (currentVersionViaScript == "" && currentVersionViaXiti == "") {
             toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : non identifiable", 5000);
-            return;                
+            return;
         }
 
         if (currentVersionViaScript != "" && currentVersionViaScript != data.result.values[1][0]) {
             toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaScript, 5000);
-            return;                
+            return;
         } else if (currentVersionViaXiti != "" && currentVersionViaXiti != data.result.values[1][0]) {
             toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaXiti, 5000);
-            return;                
+            return;
         }
 
     }
-    
+
 
 
     /* Si tout est OK, on exécute le scénario */
@@ -362,15 +354,29 @@ function initAPIClient() {
     });
 }
 
-loadScript('https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js', function () {
-    var head = document.getElementsByTagName('head')[0];
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
-    link.media = 'all';
-    head.appendChild(link);
+function loadScripts() {
+    var urls = Array.prototype.slice.call(arguments);
+    var loaded = 0;
 
-    loadScript('https://apis.google.com/js/api.js', init);
-});
+    return new Promise(function (resolve, reject) {
+        function onScriptLoad() {
+            loaded++;
 
+            if (loaded === urls.length) {
+                resolve();
+            }
+        }
+
+        for (var i = 0; i < urls.length; i++) {
+            var script = document.createElement('script');
+            script.src = urls[i] + "?" + (new Date()).getTime();
+            script.async = true;
+            script.onload = onScriptLoad;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        }
+    });
+}
+
+loadScripts( 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js',
+            'https://apis.google.com/js/api.js').then(init);
