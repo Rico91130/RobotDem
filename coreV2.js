@@ -12,6 +12,44 @@ function toastError(errTitle, errMsg, errDelay) {
 async function initRoboDem() {
 
     if (window.discover == null) {
+        var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
+        window.discover = await response.json();
+    }
+
+    if (window.scenario == null || window.sheetId == null) {
+        var demarcheCode = window.location.href.split("/").slice(4, 5);
+        var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
+        if (demarche.length == 0) {
+            toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
+            return;
+        }
+        demarche = demarche[0];
+        window.sheetId = demarche.sheet;
+        window.scenario = demarche.tab;
+    }
+
+    if (document.querySelector("#modalLoading") == null) {
+        container = document.createElement("div");
+        container.style = "z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
+        container.id = "modalLoading";
+        container.innerHTML = `
+            <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
+                <img style="text-align:center;margin:auto;display:flex"  alt="" src="https://rico91130.github.io/RobotDem/ressources/spinner.gif" width="31" height="31"/>
+                <span id="modalLoadingMsgGlobal">Patientez, saisie de l\'étape ...<br/>
+                    <span style="font-style: italic;" id="modalLoadingMsgCustom"></span>
+                    <br/>
+                    <a style="display:none;color:#A07E9C;font-weight:bold" id="modalLoadingMsgNext" href="#" onclick="javascript:bypassStep()">Ca prend du temps...passer au champs suivant</a>
+                </span>
+            </div>`;
+        document.body.appendChild(container);
+    }
+
+    if (window.gapiLoaded) {
+        loadScenario();
+    } else {        
+        window.gapiLoaded = true;
+        window.maxRows = 200;
+
         var head = document.getElementsByTagName('head')[0];
         var link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -20,43 +58,7 @@ async function initRoboDem() {
         link.media = 'all';
         head.appendChild(link);
 
-        var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
-        window.discover = await response.json();
-
-        window.maxRows = 200;
-
-        if (document.querySelector("#modalLoading") == null) {
-            container = document.createElement("div");
-            container.style = "z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
-            container.id = "modalLoading";
-            container.innerHTML = `
-                <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
-                    <img style="text-align:center;margin:auto;display:flex"  alt="" src="https://rico91130.github.io/RobotDem/ressources/spinner.gif" width="31" height="31"/>
-                    <span id="modalLoadingMsgGlobal">Patientez, saisie de l\'étape ...<br/>
-                        <span style="font-style: italic;" id="modalLoadingMsgCustom"></span>
-                        <br/>
-                        <a style="display:none;color:#A07E9C;font-weight:bold" id="modalLoadingMsgNext" href="#" onclick="javascript:bypassStep()">Ca prend du temps...passer au champs suivant</a>
-                    </span>
-                </div>`;
-            document.body.appendChild(container);
-        }
-
         gapi.load('client:auth2', initAPIClient);
-    }
-    else {
-        if (window.scenario == null || window.sheetId == null) {
-            var demarcheCode = window.location.href.split("/").slice(4, 5);
-            var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
-            if (demarche.length == 0) {
-                toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
-                return;
-            }
-            demarche = demarche[0];
-            window.sheetId = demarche.sheet;
-            window.scenario = demarche.tab;
-        }
-        
-        loadScenario();
     }
 }
 
