@@ -148,7 +148,10 @@ class Step {
                     this.getItem().click();
                     this.done = true;
                     break;
-
+                case "select" : 
+                    this.getItem().value = this.args.value;
+                    this.getItem().dispatchEvent(new Event('change', { bubbles: true }));
+                    break;
                 case "autocomplete":
 
                     /* Traitement initial comme un textbox */
