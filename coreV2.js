@@ -271,7 +271,7 @@ async function executeScenario(data) {
         toastError("Erreur lors du chargement", "Etape de la démarche non reconnue", 5000);
         return;
     };
-    steId = stepId.textContent;
+    stepId = stepId.textContent;
     
     document.querySelector("#modalLoading").style["display"] = "block";
 
