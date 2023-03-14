@@ -19,15 +19,14 @@ async function init() {
     link.media = 'all';
     head.appendChild(link);
 
-    const response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
-    const json = await response.json();
-    console.log(json);
+    var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
+    var discover = await response.json();
 
-    if (window.scenario == null)
-        window.scenario = "generic";
-    if (window.sheetId == null)
-        window.sheetId = "1saL1aPCRlGCaJIHo543D8xhyXqojgs2lTaMJ-oVVVKE";
-
+    if (window.scenario == null || window.sheetId == null) {
+        var demarche = window.location.href.split("/").slice(4,5);
+        console.log(discover.demarches[demarche]);
+    }
+    
     window.maxRows = 200;
     gapi.load('client:auth2', initAPIClient);
 
