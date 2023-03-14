@@ -24,7 +24,15 @@ async function init() {
 
     if (window.scenario == null || window.sheetId == null) {
         var demarche = window.location.href.split("/").slice(4,5);
-        console.log(discover.demarches[demarche]);
+        demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarche));
+        if (demarche.lengh == 0)
+        {
+            toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
+            return;
+        }
+        demarche = demarche[0];
+        window.sheetId = demarche.sheet;
+        window.scenario = demarche.tab;
     }
     
     window.maxRows = 200;
@@ -217,7 +225,7 @@ class Step {
 function initScenario(data) {
     /* On vérifie qu'on est bien sur la page de la démarche */
     if (window.location.href.indexOf(data.result.values[0][0]) == -1) {
-        toastError("Erreur lors du chargement", "Url de la démarche non reconnue", 5000);
+        toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#2)", 5000);
         return;
     }
 
