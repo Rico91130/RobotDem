@@ -11,7 +11,7 @@ function toastError(errTitle, errMsg, errDelay) {
 
 async function initRoboDem() {
 
-    if (discover == null) {
+    if (window.discover == null) {
         var head = document.getElementsByTagName('head')[0];
         var link = document.createElement('link');
         link.rel = 'stylesheet';
