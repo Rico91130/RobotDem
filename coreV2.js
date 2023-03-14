@@ -38,11 +38,12 @@ async function initRoboDem() {
                     selectedRule = rule;
                 }
                 else {
+                    console.log(rule.conditions);
                     var conditionsOK = false;
                     try {
                         var conditionsOK = eval('(' + rule.conditions + ')');
                     } catch (e) {
-
+                        console.log(e);
                     }
                     if (conditionsOK)
                         selectedRule = rule;
