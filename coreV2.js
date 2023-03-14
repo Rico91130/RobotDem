@@ -137,7 +137,7 @@ class Step {
             _args = this._rawArgs;
 
         /* cas 2 : JSON */
-        if (/^{.}*$/g.test(_args)) {
+        if (/^{.+}$/g.test(_args)) {
             try {
                 this.args = JSON.parse(_args);
             } catch (e) {
