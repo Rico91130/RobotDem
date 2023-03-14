@@ -23,8 +23,8 @@ async function init() {
     var discover = await response.json();
 
     if (window.scenario == null || window.sheetId == null) {
-        var demarche = window.location.href.split("/").slice(4,5);
-        demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarche));
+        var demarcheCode = window.location.href.split("/").slice(4,5);
+        var demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
         if (demarche.lengh == 0)
         {
             toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
