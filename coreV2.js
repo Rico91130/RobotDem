@@ -137,10 +137,15 @@ class Step {
             _args = this._rawArgs;
 
         /* cas 2 : JSON */
-        try {
-            this.args = JSON.parse(_args);
-        } catch (e) {
-            /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
+        if (/^{.}*$/g.test(_args)) {
+            try {
+                this.args = JSON.parse(_args);
+            } catch (e) {
+                this.args = { "value": _args };
+            }
+        }
+        /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
+        else {
             this.args = { "value": _args };
         }
     }
