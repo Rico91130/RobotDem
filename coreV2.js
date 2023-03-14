@@ -32,13 +32,12 @@ async function initRoboDem() {
             var rules = demarche;
             var selectedRule = null;
             var i = 0;
-            while (selectedRule == null && i++ < rules.length) {
-                rule = rules[i];
+            while (selectedRule == null && i < rules.length) {
+                rule = rules[i++];
                 if (rule.conditions == null) {
                     selectedRule = rule;
                 }
                 else {
-                    console.log(rule.conditions);
                     var conditionsOK = false;
                     try {
                         var conditionsOK = eval('(' + rule.conditions + ')');
@@ -60,7 +59,6 @@ async function initRoboDem() {
             window.sheetId = demarche.sheet;
             window.scenario = demarche.tab;
         }
-
     }
 
     if (document.querySelector("#modalLoading") == null) {
