@@ -149,8 +149,12 @@ class Step {
                     this.done = true;
                     break;
                 case "select" : 
-                    this.getItem().value = this.args.value;
-                    this.getItem().dispatchEvent(new Event('change', { bubbles: true }));
+                    /* Récupération de la value par le text */
+                    var options = [...this.getItem().querySelectorAll("option")].filter(option => option.text == this.args.value).map(option => option.value);
+                    if (options.length == 1) {
+                        this.getItem().value = options[0];
+                        this.getItem().dispatchEvent(new Event('change', { bubbles: true }));
+                    }
                     this.done = true;
                     break;
                 case "autocomplete":
