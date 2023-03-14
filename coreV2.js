@@ -9,41 +9,41 @@ function toastError(errTitle, errMsg, errDelay) {
     });
 }
 
-async function init() {
+var discover = null;
 
-    var head = document.getElementsByTagName('head')[0];
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
-    link.media = 'all';
-    head.appendChild(link);
+async function initRoboDem() {
 
-    var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
-    var discover = await response.json();
+    if (discover == null) {
+        var head = document.getElementsByTagName('head')[0];
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
+        link.media = 'all';
+        head.appendChild(link);
 
-    if (window.scenario == null || window.sheetId == null) {
-        var demarcheCode = window.location.href.split("/").slice(4,5);
-        var demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
-        if (demarche.length == 0)
-        {
-            toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
-            return;
+        var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
+        var discover = await response.json();
+
+        if (window.scenario == null || window.sheetId == null) {
+            var demarcheCode = window.location.href.split("/").slice(4, 5);
+            var demarche = discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
+            if (demarche.length == 0) {
+                toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
+                return;
+            }
+            demarche = demarche[0];
+            window.sheetId = demarche.sheet;
+            window.scenario = demarche.tab;
         }
-        demarche = demarche[0];
-        window.sheetId = demarche.sheet;
-        window.scenario = demarche.tab;
-    }
-    
-    window.maxRows = 200;
-    gapi.load('client:auth2', initAPIClient);
 
+        window.maxRows = 200;
 
-    if (document.querySelector("#modalLoading") == null) {
-        container = document.createElement("div");
-        container.style = "z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
-        container.id = "modalLoading";
-        container.innerHTML = `
+        if (document.querySelector("#modalLoading") == null) {
+            container = document.createElement("div");
+            container.style = "z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
+            container.id = "modalLoading";
+            container.innerHTML = `
                 <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
                     <img style="text-align:center;margin:auto;display:flex"  alt="" src="https://rico91130.github.io/RobotDem/ressources/spinner.gif" width="31" height="31"/>
                     <span id="modalLoadingMsgGlobal">Patientez, saisie de l\'étape ...<br/>
@@ -52,9 +52,14 @@ async function init() {
                         <a style="display:none;color:#A07E9C;font-weight:bold" id="modalLoadingMsgNext" href="#" onclick="javascript:bypassStep()">Ca prend du temps...passer au champs suivant</a>
                     </span>
                 </div>`;
-        document.body.appendChild(container);
-    }
+            document.body.appendChild(container);
+        }
 
+        gapi.load('client:auth2', initAPIClient);
+    }
+    else {
+        loadScenario();
+    }
 }
 
 var _bypassStep = false;
@@ -222,7 +227,7 @@ class Step {
     }
 }
 
-function initScenario(data) {
+function checkAndExecuteScenario(data) {
     /* On vérifie qu'on est bien sur la page de la démarche */
     if (window.location.href.indexOf(data.result.values[0][0]) == -1) {
         toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#2)", 5000);
@@ -254,8 +259,6 @@ function initScenario(data) {
 
     }
 
-
-
     /* Si tout est OK, on exécute le scénario */
     gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: window.sheetId,
@@ -264,15 +267,14 @@ function initScenario(data) {
 }
 
 async function executeScenario(data) {
-    
+
     var stepId = document.querySelector("p.current .number");
-    if (stepId == null)
-    {
+    if (stepId == null) {
         toastError("Erreur lors du chargement", "Etape de la démarche non reconnue", 5000);
         return;
     };
     stepId = stepId.textContent;
-    
+
     document.querySelector("#modalLoading").style["display"] = "block";
 
     if (stepId != "") {
@@ -344,6 +346,13 @@ async function executeScenario(data) {
     document.querySelector("#modalLoading").style["display"] = "none";
 }
 
+function loadScenario() {
+    gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: window.sheetId,
+        range: window.scenario + '!A1:I2'
+    }).then(checkAndExecuteScenario);
+}
+
 function loadSteps(data) {
     var steps = [];
     for (var i = 1; i < data.result.values.length; i++) {
@@ -361,10 +370,7 @@ function initAPIClient() {
     }).then(function () {
         console.log("Liste des scénarios : https://docs.google.com/spreadsheets/d/" + window.sheetId);
         console.log("Chargement du scénario " + window.scenario + "...");
-        gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: window.sheetId,
-            range: window.scenario + '!A1:I2'
-        }).then(initScenario);
+        loadScenario();
     });
 }
 
@@ -392,5 +398,5 @@ function loadScripts() {
     });
 }
 
-loadScripts( 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js',
-            'https://apis.google.com/js/api.js').then(init);
+loadScripts('https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js',
+    'https://apis.google.com/js/api.js').then(initRoboDem);
