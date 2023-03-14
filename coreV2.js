@@ -23,7 +23,7 @@ async function initRoboDem() {
         head.appendChild(link);
 
         var response = await fetch('https://rico91130.github.io/RobotDem/discover.json');
-        var discover = await response.json();
+        discover = await response.json();
 
         window.maxRows = 200;
 
