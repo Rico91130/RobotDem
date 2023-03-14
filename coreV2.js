@@ -31,8 +31,9 @@ async function initRoboDem() {
         if (Array.isArray(demarche)) {
             var rules = demarche;
             var selectedRule = null;
-            while (selectedRule == null && rules > 0) {
-                rule = rules.shift();
+            var i = 0;
+            while (selectedRule == null && i++ < rules.length) {
+                rule = rules[i];
                 if (rule.conditions == null) {
                     selectedRule = rule;
                 }
