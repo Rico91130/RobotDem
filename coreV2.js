@@ -369,23 +369,20 @@ async function executeScenario(data) {
 function loadScenario() {
     /*
      * Deux possibilités pour charger un scénario : 
-     * Cas 1 : depuis un c/c excel (si le paramètre fromXLS est présent dans l'url)
+     * Cas 1 : depuis un c/c excel (si le paramètre fromXLS est présent dans l'url on initialise le scénario)
      * Cas 2 : depuis google spreadsheet (cas par défaut)
      */
     if (window.location.href.indexOf("fromXLS") != -1) {
-        /* Si il n'y a pas de données dans le sessionStorage on affiche un text area pour saisir les données */ 
-        if (sessionStorage.getItem("RobotDem.scenarioData") == null) {
-            document.querySelector("#modalXLSSource").style["display"] = "block";
-        } else {
-            console.log("données dans la session");
-        }
-            /* Sinon on déroule */
+        document.querySelector("#modalXLSSource").style["display"] = "block";
     } else {
-        if (window.sheetId && window.scenario) {
-            gapi.client.sheets.spreadsheets.values.get({
-                spreadsheetId: window.sheetId,
-                range: window.scenario + '!A1:I2'
-            }).then(loadScenarioFromGAPI);
+        if (sessionStorage.getItem("RobotDem.scenarioData") == null) {
+        } else {
+            if (window.sheetId && window.scenario) {
+                gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: window.sheetId,
+                    range: window.scenario + '!A1:I2'
+                }).then(loadScenarioFromGAPI);
+            }
         }
     }
 }
