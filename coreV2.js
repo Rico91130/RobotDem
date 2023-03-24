@@ -273,45 +273,6 @@ class Step {
     }
 }
 
-function checkAndExecuteScenario(data) {
-    /* On vérifie qu'on est bien sur la page de la démarche */
-    if (window.location.href.indexOf(data.result.values[0][0]) == -1) {
-        toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#2)", 5000);
-        return;
-    }
-
-    /* On vérifie que les numéros de versions concordent :
-     * - On vérifie l'utilisation du wildcard
-     * - via la version des scripts
-     * - autrement via le tag xiti
-     */
-    if (data.result.values[1][0] != "*") {
-
-        var currentVersionViaScript = [...document.querySelectorAll("script")].find(e => e.src.includes('psl.fonctions.js?version=')).src.split("=")[1];
-        var currentVersionViaXiti = (psl.xiti != null && psl.xiti.demarche != null && psl.xiti.demarche.version != null) ? psl.xiti.demarche.version : "";
-
-        if (currentVersionViaScript == "" && currentVersionViaXiti == "") {
-            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : non identifiable", 5000);
-            return;
-        }
-
-        if (currentVersionViaScript != "" && currentVersionViaScript != data.result.values[1][0]) {
-            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaScript, 5000);
-            return;
-        } else if (currentVersionViaXiti != "" && currentVersionViaXiti != data.result.values[1][0]) {
-            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaXiti, 5000);
-            return;
-        }
-
-    }
-
-    /* Si tout est OK, on exécute le scénario */
-    gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: window.sheetId,
-        range: window.scenario + '!A3:L' + (3 + window.maxRows)
-    }).then(executeScenario);
-}
-
 async function executeScenario(data) {
 
     var context = getContext();
@@ -393,10 +354,71 @@ async function executeScenario(data) {
 }
 
 function loadScenario() {
+    /*
+     * Deux possibilités pour charger un scénario : 
+     * Cas 1 : depuis un c/c excel (si le paramètre fromXLS est présent dans l'url)
+     * Cas 2 : depuis google spreadsheet (cas par défaut)
+     */
+    if (window.location.href.indexOf("fromXLS") != -1) {
+        /* Si il n'y a pas de données dans le sessionStorage on affiche un text area pour saisir les données */ 
+        if (sessionStorage.getItem("RobotDem.scenarioData") == null) {
+            console.log("pas de données dans la session");
+        } else {
+            console.log("données dans la session");
+        }
+            /* Sinon on déroule */
+    } else {
+        if (window.sheetId && window.scenario) {
+            gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: window.sheetId,
+                range: window.scenario + '!A1:I2'
+            }).then(loadScenarioFromGAPI);
+        }
+    }
+}
+
+function loadScenarioFromXLSData(data)
+{
+    
+}
+
+function loadScenarioFromGAPI(data) {
+    /* On vérifie qu'on est bien sur la page de la démarche */
+    if (window.location.href.indexOf(data.result.values[0][0]) == -1) {
+        toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#2)", 5000);
+        return;
+    }
+
+    /* On vérifie que les numéros de versions concordent :
+     * - On vérifie l'utilisation du wildcard
+     * - via la version des scripts
+     * - autrement via le tag xiti
+     */
+    if (data.result.values[1][0] != "*") {
+
+        var currentVersionViaScript = [...document.querySelectorAll("script")].find(e => e.src.includes('psl.fonctions.js?version=')).src.split("=")[1];
+        var currentVersionViaXiti = (psl.xiti != null && psl.xiti.demarche != null && psl.xiti.demarche.version != null) ? psl.xiti.demarche.version : "";
+
+        if (currentVersionViaScript == "" && currentVersionViaXiti == "") {
+            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : non identifiable", 5000);
+            return;
+        }
+
+        if (currentVersionViaScript != "" && currentVersionViaScript != data.result.values[1][0]) {
+            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaScript, 5000);
+            return;
+        } else if (currentVersionViaXiti != "" && currentVersionViaXiti != data.result.values[1][0]) {
+            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaXiti, 5000);
+            return;
+        }
+
+    }
+
+    /* Si tout est OK, on exécute le scénario */
     gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: window.sheetId,
-        range: window.scenario + '!A1:I2'
-    }).then(checkAndExecuteScenario);
+        range: window.scenario + '!A3:L' + (3 + window.maxRows)
+    }).then(executeScenario);
 }
 
 function loadSteps(data) {
