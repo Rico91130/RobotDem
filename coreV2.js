@@ -77,6 +77,17 @@ async function initRoboDem() {
         document.body.appendChild(container);
     }
 
+    if (document.querySelector("#modalXLSSource") == null) {
+        container = document.createElement("div");
+        container.style = "z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
+        container.id = "modalXLSSource";
+        container.innerHTML = `
+            <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
+               <span>Copier/coller le scénario ci dessous :</span>
+            </div>`;
+        document.body.appendChild(container);
+    }
+
     if (window.gapiLoaded) {
         loadScenario();
     } else {
@@ -362,7 +373,7 @@ function loadScenario() {
     if (window.location.href.indexOf("fromXLS") != -1) {
         /* Si il n'y a pas de données dans le sessionStorage on affiche un text area pour saisir les données */ 
         if (sessionStorage.getItem("RobotDem.scenarioData") == null) {
-            console.log("pas de données dans la session");
+            document.querySelector("#modalXLSSource").style["display"] = "block";
         } else {
             console.log("données dans la session");
         }
@@ -436,8 +447,6 @@ function initAPIClient() {
         discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
         scope: "https://www.googleapis.com/auth/spreadsheets.readonly"
     }).then(function () {
-        console.log("Liste des scénarios : https://docs.google.com/spreadsheets/d/" + window.sheetId);
-        console.log("Chargement du scénario " + window.scenario + "...");
         loadScenario();
     });
 }
