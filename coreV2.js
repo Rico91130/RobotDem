@@ -83,7 +83,9 @@ async function initRoboDem() {
         container.id = "modalXLSSource";
         container.innerHTML = `
             <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
-               <span>Copier/coller le scénario ci dessous :</span>
+            <span>Copier/coller le scénario ci dessous :</span><br/>
+            <textarea id="XLSData" style="width:90%; margin:auto;display:block"></textarea>
+            <a href="#" onclick="loadXLSData">Charger ce scénario et l'exécuter</a>
             </div>`;
         document.body.appendChild(container);
     }
@@ -388,7 +390,14 @@ function loadScenario() {
     }
 }
 
-function loadScenarioFromXLSData(data)
+function loadXLSData()
+{
+    document.querySelector("#modalXLSSource").style["display"] = "none";
+    var rawData = document.querySelector("#XLSData").textContent;
+    console.log(rawData);
+}
+
+function loadScenarioFromSessionData(data)
 {
     
 }
