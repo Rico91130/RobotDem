@@ -88,7 +88,7 @@ async function initRoboDem() {
                 <br/>
                 <input name="robotDemLoadingType" type="radio" id="robotDemForceCustom"value="robotDemForceCustom">
                     <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
-                    <textarea id="robotDemXLSData" style="width:90%; margin:auto;display:block"></textarea>
+                    <textarea id="robotDemXLSData" style="white-space: nowrap;overflow:scroll;width:90%; margin:auto;display:block;height:200px;font-family:courier, courier new, serif;"></textarea>
                 <a href="#" onclick="robotDemSaveConfig()">Sauvegarder</a>
             </div>`;
         document.body.appendChild(container);
