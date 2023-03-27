@@ -393,6 +393,7 @@ function loadScenario() {
 
 function robotDemSaveConfig()
 {
+    window.RobotDemDisplaySetup = false;
     document.querySelector("#modalSetup").style["display"] = "none";
     sessionStorage.setItem("RobotDem.executeFromXLS") = (document.querySelector("input[type='radio'][name='robotDemLoadingType']:checked").value == "robotDemForceCustom" ? "1" : "0");
 
