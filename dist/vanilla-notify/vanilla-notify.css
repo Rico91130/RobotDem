@@ -49,11 +49,7 @@
   -ms-border-radius: 5px;
   border-radius: 5px;
   margin-bottom: 15px;
-  opacity: 0.75;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)";
-  filter: alpha(opacity=75); }
-  .vnotify-item:hover {
-    opacity: 1; }
+}
 
 .vnotify-title {
   font-weight: bold; }
