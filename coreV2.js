@@ -395,7 +395,7 @@ function convertXLSDataAndExecute()
     
     var data = {
         "result" : {
-            "values" : rawData.split("\r\n").map(x => x.split("\t"))
+            "values" : rawData.split("\n").map(x => x.trim().split("\t"))
         }
     };
     
