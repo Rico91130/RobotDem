@@ -85,7 +85,7 @@ async function initRoboDem() {
             <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
             <span>Copier/coller un scénario :</span><br/>
             <textarea id="XLSData" style="width:90%; margin:auto;display:block"></textarea>
-            <a href="#" onclick="loadXLSData()">Charger ce scénario et l'exécuter</a>
+            <a href="#" onclick="convertXLSDataAndExecute()">Charger ce scénario et l'exécuter</a>
             </div>`;
         document.body.appendChild(container);
     }
@@ -375,7 +375,8 @@ function loadScenario() {
     if (window.location.href.indexOf("fromXLS") != -1) {
         document.querySelector("#modalSetup").style["display"] = "block";
     } else {
-        if (sessionStorage.getItem("RobotDem.scenarioData") == null) {
+        if (sessionStorage.getItem("RobotDem.scenarioData") != null) {
+            loadScenarioFromSessionData();
         } else {
             if (window.sheetId && window.scenario) {
                 gapi.client.sheets.spreadsheets.values.get({
@@ -387,16 +388,27 @@ function loadScenario() {
     }
 }
 
-function loadXLSData()
+function convertXLSDataAndExecute()
 {
     document.querySelector("#modalSetup").style["display"] = "none";
-    var data = document.querySelector("#XLSData").value;
-    executeScenario(data);
+    var rawData = document.querySelector("#XLSData").value;
+    
+    var data = {
+        "result" : {
+            "values" : rawData.split("\r\n").map(x => x.split("\t"))
+        }
+    };
+    
+    sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
+    loadScenarioFromSessionData();
+
 }
 
-function loadScenarioFromSessionData(rawData)
+/* Transforme un tableau XLS en tableau au format GAPI */
+function loadScenarioFromSessionData()
 {
-    var data = rawData.split("\r\n").map(x => x.split("\t"));
+    data = JSON.parse(sessionStorage.getItem("RobotDem.scenarioData"));
+    executeScenario(data);
 }
 
 function loadScenarioFromGAPI(data) {
