@@ -9,58 +9,26 @@ function toastError(errTitle, errMsg, errDelay) {
     });
 }
 
-async function initRoboDem() {
+/* Fonction de chargement principale */
+async function initializeRessources() {
 
+    if (document.querySelectorAll("link[href*='vanilla']").length == 0) {
+        var head = document.getElementsByTagName('head')[0];
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
+        link.media = 'all';
+        head.appendChild(link);
+    }
+
+    /* récupération de la liste des spreadsheet */
     if (window.discover == null) {
         var response = await fetch('https://rico91130.github.io/RobotDem/discover.json?' + (new Date()).getTime());
         window.discover = await response.json();
     }
 
-    if (window.scenario == null || window.sheetId == null) {
-        var context = getContext();
-        var demarcheCode = window.location.href.split("/").slice(4, 5);
-        var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(demarcheCode)).map(x => x[demarcheCode]);
-
-        if (demarche.length == 0) {
-            toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
-            return;
-        }
-
-        demarche = demarche[0];
-
-        if (Array.isArray(demarche)) {
-            var rules = demarche;
-            var selectedRule = null;
-            var i = 0;
-            while (selectedRule == null && i < rules.length) {
-                rule = rules[i++];
-                if (rule.conditions == null) {
-                    selectedRule = rule;
-                }
-                else {
-                    var conditionsOK = false;
-                    try {
-                        var conditionsOK = eval('(' + rule.conditions + ')');
-                    } catch (e) {
-                        console.log(e);
-                    }
-                    if (conditionsOK)
-                        selectedRule = rule;
-                }
-            }
-            if (selectedRule) {
-                window.sheetId = selectedRule.sheet;
-                window.scenario = selectedRule.tab;
-            } else {
-                toastError("Erreur lors du chargement", "Impossible d'identifier un scénario d'exécution", 5000);
-                return;
-            }
-        } else {
-            window.sheetId = demarche.sheet;
-            window.scenario = demarche.tab;
-        }
-    }
-
+    /* Initialisation de l'IHM */
     if (document.querySelector("#modalLoading") == null) {
         container = document.createElement("div");
         container.style = "z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
@@ -76,7 +44,6 @@ async function initRoboDem() {
             </div>`;
         document.body.appendChild(container);
     }
-
     if (document.querySelector("#modalSetup") == null) {
         container = document.createElement("div");
         container.style = "z-index:200;display:none;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
@@ -97,25 +64,17 @@ async function initRoboDem() {
             radio.addEventListener('change', () => {
                 document.querySelector("#robotDemXLSData").disabled = (document.querySelector("#robotDemGeneric").checked);
             })
-          });
-
+        });
     }
 
-    if (window.gapiLoaded) {
-        loadScenario();
-    } else {
+    /* Chargement des API google si besoin ... */
+    if (!window.gapiLoaded) {
         window.gapiLoaded = true;
         window.maxRows = 200;
-
-        var head = document.getElementsByTagName('head')[0];
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.type = 'text/css';
-        link.href = 'https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.css';
-        link.media = 'all';
-        head.appendChild(link);
-
         gapi.load('client:auth2', initAPIClient);
+    } else {
+        /* ... Autrement on peut y aller ! */
+        loadScenario();
     }
 }
 
@@ -398,28 +357,75 @@ function loadScenario() {
             sessionStorage.getItem("RobotDem.scenarioData") != null) {
             loadScenarioFromSessionData();
         } else {
-            if (window.sheetId && window.scenario) {
-                gapi.client.sheets.spreadsheets.values.get({
-                    spreadsheetId: window.sheetId,
-                    range: window.scenario + '!A1:I2'
-                }).then(loadScenarioFromGAPI);
+
+            /*
+             * Dans le cas où on ne charge pas un scénario custom et qu'il n'existe pas encore de
+             * scenario / sheetid à utilisé, on va parcourir la liste des scénarios génériques
+             */
+            if (sessionStorage.getItem("RobotDem.executeFromXLS") != "1" &&
+                (window.scenario == null || window.sheetId == null)) {
+                var context = getContext();
+                var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(context.codeDemarche)).map(x => x[context.codeDemarche]);
+
+                if (demarche.length == 0) {
+                    toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
+                    return;
+                }
+
+                demarche = demarche[0];
+
+                if (Array.isArray(demarche)) {
+                    var rules = demarche;
+                    var selectedRule = null;
+                    var i = 0;
+                    while (selectedRule == null && i < rules.length) {
+                        rule = rules[i++];
+                        if (rule.conditions == null) {
+                            selectedRule = rule;
+                        }
+                        else {
+                            var conditionsOK = false;
+                            try {
+                                var conditionsOK = eval('(' + rule.conditions + ')');
+                            } catch (e) {
+                                console.log(e);
+                            }
+                            if (conditionsOK)
+                                selectedRule = rule;
+                        }
+                    }
+                    if (selectedRule) {
+                        window.sheetId = selectedRule.sheet;
+                        window.scenario = selectedRule.tab;
+                    } else {
+                        toastError("Erreur lors du chargement", "Impossible d'identifier un scénario d'exécution", 5000);
+                        return;
+                    }
+                } else {
+
+                    window.sheetId = demarche.sheet;
+                    window.scenario = demarche.tab;
+
+                    gapi.client.sheets.spreadsheets.values.get({
+                        spreadsheetId: window.sheetId,
+                        range: window.scenario + '!A1:I2'
+                    }).then(loadScenarioFromGAPI);
+                }
             }
         }
     }
 }
 
-function robotDemSaveConfig()
-{
+function robotDemSaveConfig() {
     window.RobotDemDisplaySetup = false;
     document.querySelector("#modalSetup").style["display"] = "none";
     sessionStorage.setItem("RobotDem.executeFromXLS", document.querySelector("input[type='radio'][name='robotDemLoadingType']:checked").value == "robotDemForceCustom" ? "1" : "0");
 
-    if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1")
-    {
+    if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1") {
         var rawData = document.querySelector("#robotDemXLSData").value;
         var data = {
-            "result" : {
-                "values" : rawData.split("\n").map(x => x.trim().split("\t"))
+            "result": {
+                "values": rawData.split("\n").map(x => x.trim().split("\t"))
             }
         };
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
@@ -428,8 +434,7 @@ function robotDemSaveConfig()
 }
 
 /* Transforme un tableau XLS en tableau au format GAPI */
-function loadScenarioFromSessionData()
-{
+function loadScenarioFromSessionData() {
     data = JSON.parse(sessionStorage.getItem("RobotDem.scenarioData"));
     executeScenario(data);
 }
@@ -527,9 +532,16 @@ function getContext() {
     return {
         "etape": stepId,
         "connected": document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
-        "demarche": document.querySelector("h1[class=\"title-section\"]").textContent,
+        "titreDemarche": document.querySelector("h1[class=\"title-section\"]").textContent,
+        "codeDemarche": window.location.href.split("/").slice(4, 5)
     }
 }
 
-loadScripts('https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js',
-    'https://apis.google.com/js/api.js').then(initRoboDem);
+/* On ne charge qu'une fois les scripts */
+if (!window.robotDemScriptsLoaded) {
+    loadScripts('https://rico91130.github.io/RobotDem/dist/vanilla-notify/vanilla-notify.js',
+        'https://apis.google.com/js/api.js').then(initializeRessources);
+    window.robotDemScriptsLoaded = true;
+} else {
+    loadScenario();
+}
