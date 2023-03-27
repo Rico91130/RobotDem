@@ -368,7 +368,7 @@ function loadScenario() {
                 var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(context.codeDemarche)).map(x => x[context.codeDemarche]);
 
                 if (demarche.length == 0) {
-                    toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#1)", 5000);
+                    toastError("Erreur lors du chargement (discover)", "Démarche non référencée", 5000);
                     return;
                 }
 
@@ -398,7 +398,7 @@ function loadScenario() {
                         window.sheetId = selectedRule.sheet;
                         window.scenario = selectedRule.tab;
                     } else {
-                        toastError("Erreur lors du chargement", "Impossible d'identifier un scénario d'exécution", 5000);
+                        toastError("Erreur lors du chargement (discover)", "Aucun des scénarios disponibles pour cette démarche n'est utilisable", 5000);
                         return;
                     }
                 } else {
@@ -442,7 +442,7 @@ function loadScenarioFromSessionData() {
 function loadScenarioFromGAPI(data) {
     /* On vérifie qu'on est bien sur la page de la démarche */
     if (window.location.href.indexOf(data.result.values[0][0]) == -1) {
-        toastError("Erreur lors du chargement", "Url de la démarche non reconnue (#2)", 5000);
+        toastError("Erreur lors du chargement (gapi)", "L'url du scénario ne correspond pas à la démarche en cours", 5000);
         return;
     }
 
@@ -457,15 +457,15 @@ function loadScenarioFromGAPI(data) {
         var currentVersionViaXiti = (psl.xiti != null && psl.xiti.demarche != null && psl.xiti.demarche.version != null) ? psl.xiti.demarche.version : "";
 
         if (currentVersionViaScript == "" && currentVersionViaXiti == "") {
-            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : non identifiable", 5000);
+            toastError("Erreur lors du chargement (gapi)", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : non identifiable", 5000);
             return;
         }
 
         if (currentVersionViaScript != "" && currentVersionViaScript != data.result.values[1][0]) {
-            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaScript, 5000);
+            toastError("Erreur lors du chargement (gapi)", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaScript, 5000);
             return;
         } else if (currentVersionViaXiti != "" && currentVersionViaXiti != data.result.values[1][0]) {
-            toastError("Erreur lors du chargement", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaXiti, 5000);
+            toastError("Erreur lors du chargement (gapi)", "Version supportée : " + data.result.values[1][0] + "<br/>Version actuelle : " + currentVersionViaXiti, 5000);
             return;
         }
 
