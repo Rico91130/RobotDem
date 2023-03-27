@@ -351,6 +351,7 @@ function loadScenario() {
 
         document.querySelector("#modalSetup").style["display"] = "block";
         document.querySelector("#robotDemXLSData").value = sessionStorage.getItem("RobotDem.scenarioDataRaw");
+
     } else {
         if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
             sessionStorage.getItem("RobotDem.scenarioData") != null) {
@@ -361,19 +362,23 @@ function loadScenario() {
              * Dans le cas où on ne charge pas un scénario custom et qu'il n'existe pas encore de
              * scenario / sheetid à utilisé, on va parcourir la liste des scénarios génériques
              */
-            if (sessionStorage.getItem("RobotDem.executeFromXLS") != "1" &&
-                (window.scenario == null || window.sheetId == null)) {
-                var context = getContext();
-                var demarche = window.discover.demarches.filter(demarche => demarche.hasOwnProperty(context.codeDemarche)).map(x => x[context.codeDemarche]);
+            if (sessionStorage.getItem("RobotDem.executeFromXLS") != "1") {
 
-                if (demarche.length == 0) {
-                    toastError("Erreur lors du chargement (discover)", "Démarche non référencée", 5000);
-                    return;
-                }
+                if (window.scenario == null || window.sheetId == null) {
+                    var context = getContext();
+                    var demarche = window.discover.demarches.filter(_demarche => _demarche.hasOwnProperty(context.codeDemarche)).map(x => x[context.codeDemarche]);
 
-                demarche = demarche[0];
+                    if (demarche.length == 0) {
+                        toastError("Erreur lors du chargement (discover)", "Démarche non référencée", 5000);
+                        return;
+                    }
 
-                if (Array.isArray(demarche)) {
+                    demarche = demarche[0];
+
+                    if (!Array.isArray(demarche)) {
+                        demarche = [demarche];
+                    }
+
                     var rules = demarche;
                     var selectedRule = null;
                     var i = 0;
@@ -393,6 +398,7 @@ function loadScenario() {
                                 selectedRule = rule;
                         }
                     }
+
                     if (selectedRule) {
                         window.sheetId = selectedRule.sheet;
                         window.scenario = selectedRule.tab;
@@ -400,16 +406,13 @@ function loadScenario() {
                         toastError("Erreur lors du chargement (discover)", "Aucun des scénarios disponibles pour cette démarche n'est utilisable", 5000);
                         return;
                     }
-                } else {
-
-                    window.sheetId = demarche.sheet;
-                    window.scenario = demarche.tab;
-
-                    gapi.client.sheets.spreadsheets.values.get({
-                        spreadsheetId: window.sheetId,
-                        range: window.scenario + '!A1:I2'
-                    }).then(loadScenarioFromGAPI);
                 }
+
+                gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: window.sheetId,
+                    range: window.scenario + '!A1:I2'
+                }).then(loadScenarioFromGAPI);
+
             }
         }
     }
@@ -429,6 +432,9 @@ function robotDemSaveConfig() {
         };
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
         sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
+
+        window.scenario = null;
+        window.sheetId = null;       
     }
 }
 
@@ -532,7 +538,7 @@ function getContext() {
         "etape": stepId,
         "connected": document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
         "titreDemarche": document.querySelector("h1[class=\"title-section\"]").textContent,
-        "codeDemarche": window.location.href.split("/").slice(4, 5)
+        "codeDemarche": window.location.href.split("/").slice(4, 5)[0]
     }
 }
 
