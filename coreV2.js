@@ -371,7 +371,7 @@ function loadScenario() {
     /* Si window.RobotDemDisplaySetup == true, on affiche la configuration */
     if (window.RobotDemDisplaySetup) {
         document.querySelector("#modalSetup").style["display"] = "block";
-        document.querySelector("#XLSData").value = session.getItem("RobotDem.scenarioDataRaw");
+        document.querySelector("#XLSData").value = sessionStorage.getItem("RobotDem.scenarioDataRaw");
     } else {
         if (sessionStorage.getItem("RobotDem.scenarioData") != null) {
             loadScenarioFromSessionData();
