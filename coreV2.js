@@ -79,13 +79,16 @@ async function initRoboDem() {
 
     if (document.querySelector("#modalSetup") == null) {
         container = document.createElement("div");
-        container.style = "z-index:200;display:none; text-align: center;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
+        container.style = "z-index:200;display:none;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
         container.id = "modalSetup";
         container.innerHTML = `
             <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
-            <span>Copier/coller un scénario :</span><br/>
-            <textarea id="XLSData" style="width:90%; margin:auto;display:block"></textarea>
-            <a href="#" onclick="convertXLSDataAndExecute()">Charger ce scénario et l'exécuter</a>
+                <input type="radio" id="robotDemGeneric"value="robotDemGeneric">
+                    <label for="robotDemGeneric">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
+                <input type="radio" id="robotDemForceCustom"value="robotDemForceCustom">
+                    <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
+                    <textarea id="XLSData" style="width:90%; margin:auto;display:block"></textarea>
+                <a href="#" onclick="convertXLSDataAndExecute()">Charger ce scénario et l'exécuter</a>
             </div>`;
         document.body.appendChild(container);
     }
