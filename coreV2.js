@@ -367,12 +367,9 @@ async function executeScenario(data) {
 }
 
 function loadScenario() {
-    /*
-     * Deux possibilités pour charger un scénario : 
-     * Cas 1 : depuis un c/c excel (si le paramètre fromXLS est présent dans l'url on initialise le scénario)
-     * Cas 2 : depuis google spreadsheet (cas par défaut)
-     */
-    if (window.location.href.indexOf("fromXLS") != -1) {
+
+    /* Si window.RobotDemDisplaySetup == true, on affiche la configuration */
+    if (window.RobotDemDisplaySetup) {
         document.querySelector("#modalSetup").style["display"] = "block";
     } else {
         if (sessionStorage.getItem("RobotDem.scenarioData") != null) {
