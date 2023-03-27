@@ -1,13 +1,18 @@
 // https://spreadsheets.google.com/feeds/cells/1saL1aPCRlGCaJIHo543D8xhyXqojgs2lTaMJ-oVVVKE/1/public/values?alt=json-in-script&callback=doData
 // https://developers.google.com/sheets/api/quickstart/js
 
-function toastError(errTitle, errMsg, errDelay) {
-    vNotify.error({
+function toast(type, errTitle, errMsg, errDelay) {
+    vNotify[type]({
         "text": errMsg,
         "title": errTitle,
         "visibleDuration": errDelay
     });
 }
+
+function toastError(...args) {
+    toast.apply(null, ["error"].concat(args));
+}
+
 
 /* Fonction de chargement principale */
 async function initializeRessources() {
@@ -267,73 +272,67 @@ async function executeScenario(data) {
 
     document.querySelector("#modalLoading").style["display"] = "block";
 
-    if (context.etape != "") {
+    // Chargement des objets étapes
+    console.log("Chargement des steps de l'étape " + context.etape);
+    var steps = loadSteps(data).filter(x => x.step == context.etape && x.actif == "TRUE")
 
-        // On vérifie que ce n'est pas la fin de la démarche, écran de captcha
-        if (context.etape == "" && document.querySelectorAll("iframe[title='reCAPTCHA']").length > 0)
-            context.etape = "END";
+    // Récupération des groupes d'exclusivité 
+    var groupesExclusive = steps.filter(x => x.exclusif.length > 0).map(x => x.exclusif).filter((value, index, self) => self.indexOf(value) === index)
+    // Pour chaque groupe, on vérifie qu'il n'existe qu'une seule règle d'active
+    var groupeExclusiveError = false;
+    groupesExclusive.forEach(g => {
+        if (steps.filter(s => s.exclusif == g).length > 1) {
+            groupeExclusiveError = true;
 
-        // Chargement des objets étapes
-        console.log("Chargement des steps de l'étape " + context.etape);
-        var steps = loadSteps(data).filter(x => x.step == context.etape && x.actif == "TRUE")
+            toastError("Erreur d'exclusivité", "Plus d'une règle est active concernant le groupe d'exclusivité '" + g + "'");
+        }
+    });
 
-        // Récupération des groupes d'exclusivité 
-        var groupesExclusive = steps.filter(x => x.exclusif.length > 0).map(x => x.exclusif).filter((value, index, self) => self.indexOf(value) === index)
-        // Pour chaque groupe, on vérifie qu'il n'existe qu'une seule règle d'active
-        var groupeExclusiveError = false;
-        groupesExclusive.forEach(g => {
-            if (steps.filter(s => s.exclusif == g).length > 1) {
-                groupeExclusiveError = true;
+    if (groupeExclusiveError)
+        return;
 
-                toastError("Erreur d'exclusivité", "Plus d'une règle est active concernant le groupe d'exclusivité '" + g + "'");
-            }
+    for (var i = 0; i < steps.length; i++) {
+
+        document.querySelector("#modalLoadingMsgNext").style["display"] = "none";
+        _bypassStep = false;
+
+        await new Promise(resolve => {
+            console.log("Execution du pas " + (i + 1) + " sur " + steps.length);
+            steps[i].execute();
+            resolve();
         });
 
-        if (groupeExclusiveError)
-            return;
+        /* On attends le statut d'acquittement du step (le délai d'acquittement cours après exécution uniquement : ne tiens pas compte du temps d'exécution) */
 
-        for (var i = 0; i < steps.length; i++) {
+        var timeoutStart = Date.now();
+        var timeoutBypassProposed = false;
+        await new Promise(resolve => {
+            var interval = setInterval(function () {
+                if (Date.now() - timeoutStart > 5000 && !timeoutBypassProposed) {
+                    timeoutBypassProposed = true;
+                    document.querySelector("#modalLoadingMsgNext").style["display"] = "block";
+                }
+                if (steps[i].done || _bypassStep) {
+                    _bypassStep = false;
+                    resolve();
+                    clearInterval(interval);
+                }
+            }, 100);
+        });
 
-            document.querySelector("#modalLoadingMsgNext").style["display"] = "none";
-            _bypassStep = false;
-
+        /* Délai d'attente potentiel */
+        if (steps[i].delay > 0 && i < steps.length - 1) {
             await new Promise(resolve => {
-                console.log("Execution du pas " + (i + 1) + " sur " + steps.length);
-                steps[i].execute();
-                resolve();
+                console.log("Attente de " + steps[i].delay + "ms avant exécution du pas suivant (pas n°" + (i + 2) + ")...");
+                setTimeout(function () {
+                    resolve();
+                }, steps[i].delay);
             });
-
-            /* On attends le statut d'acquittement du step (le délai d'acquittement cours après exécution uniquement : ne tiens pas compte du temps d'exécution) */
-
-            var timeoutStart = Date.now();
-            var timeoutBypassProposed = false;
-            await new Promise(resolve => {
-                var interval = setInterval(function () {
-                    if (Date.now() - timeoutStart > 5000 && !timeoutBypassProposed) {
-                        timeoutBypassProposed = true;
-                        document.querySelector("#modalLoadingMsgNext").style["display"] = "block";
-                    }
-                    if (steps[i].done || _bypassStep) {
-                        _bypassStep = false;
-                        resolve();
-                        clearInterval(interval);
-                    }
-                }, 100);
-            });
-
-            /* Délai d'attente potentiel */
-            if (steps[i].delay > 0 && i < steps.length - 1) {
-                await new Promise(resolve => {
-                    console.log("Attente de " + steps[i].delay + "ms avant exécution du pas suivant (pas n°" + (i + 2) + ")...");
-                    setTimeout(function () {
-                        resolve();
-                    }, steps[i].delay);
-                });
-            }
         }
     }
 
     document.querySelector("#modalLoading").style["display"] = "none";
+    toast("success", "Fin d'exécution", "L'exécution est terminée");
 }
 
 function loadScenario() {
