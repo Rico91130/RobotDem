@@ -89,7 +89,7 @@ async function initRoboDem() {
                 <input name="robotDemLoadingType" type="radio" id="robotDemForceCustom"value="robotDemForceCustom">
                     <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
                     <textarea id="XLSData" style="width:90%; margin:auto;display:block"></textarea>
-                <a href="#" onclick="convertXLSDataAndExecute()">Sauvegarder</a>
+                <a href="#" onclick="robotDemSaveConfig()">Sauvegarder</a>
             </div>`;
         document.body.appendChild(container);
     }
@@ -377,7 +377,8 @@ function loadScenario() {
         document.querySelector("#modalSetup").style["display"] = "block";
         document.querySelector("#XLSData").value = sessionStorage.getItem("RobotDem.scenarioDataRaw");
     } else {
-        if (sessionStorage.getItem("RobotDem.scenarioData") != null) {
+        if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
+            sessionStorage.getItem("RobotDem.scenarioData") != null) {
             loadScenarioFromSessionData();
         } else {
             if (window.sheetId && window.scenario) {
@@ -390,21 +391,22 @@ function loadScenario() {
     }
 }
 
-function convertXLSDataAndExecute()
+function robotDemSaveConfig()
 {
     document.querySelector("#modalSetup").style["display"] = "none";
-    var rawData = document.querySelector("#XLSData").value;
-    
-    var data = {
-        "result" : {
-            "values" : rawData.split("\n").map(x => x.trim().split("\t"))
-        }
-    };
-    
-    sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
-    sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
-    loadScenarioFromSessionData();
+    sessionStorage.setItem("RobotDem.executeFromXLS") = (document.querySelector("input[type='radio'][name='robotDemLoadingType']:checked").value == "robotDemForceCustom" ? "1" : "0");
 
+    if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1")
+    {
+        var rawData = document.querySelector("#XLSData").value;
+        var data = {
+            "result" : {
+                "values" : rawData.split("\n").map(x => x.trim().split("\t"))
+            }
+        };
+        sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
+        sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
+    }
 }
 
 /* Transforme un tableau XLS en tableau au format GAPI */
