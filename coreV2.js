@@ -83,12 +83,13 @@ async function initRoboDem() {
         container.id = "modalSetup";
         container.innerHTML = `
             <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
-                <input type="radio" id="robotDemGeneric"value="robotDemGeneric">
+                <input name="robotDemLoadingType" type="radio" id="robotDemGeneric"value="robotDemGeneric">
                     <label for="robotDemGeneric">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
-                <input type="radio" id="robotDemForceCustom"value="robotDemForceCustom">
+                <br/>
+                <input name="robotDemLoadingType" type="radio" id="robotDemForceCustom"value="robotDemForceCustom">
                     <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
                     <textarea id="XLSData" style="width:90%; margin:auto;display:block"></textarea>
-                <a href="#" onclick="convertXLSDataAndExecute()">Charger ce scénario et l'exécuter</a>
+                <a href="#" onclick="convertXLSDataAndExecute()">Sauvegarder</a>
             </div>`;
         document.body.appendChild(container);
     }
