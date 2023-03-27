@@ -84,14 +84,21 @@ async function initRoboDem() {
         container.innerHTML = `
             <div style="position:relative;margin: 0 auto;top:30%;width:1000px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
                 <input name="robotDemLoadingType" type="radio" id="robotDemGeneric"value="robotDemGeneric">
-                    <label for="robotDemGeneric" onclick="document.querySelector('#robotDemXLSData').disabled=true">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
+                    <label for="robotDemGeneric">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
                 <br/>
                 <input name="robotDemLoadingType" type="radio" id="robotDemForceCustom"value="robotDemForceCustom">
-                    <label for="robotDemForceCustom"  onclick="document.querySelector('#robotDemXLSData').disabled=false">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
+                    <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
                     <textarea id="robotDemXLSData" style="width:90%; margin:auto;display:block"></textarea>
                 <a href="#" onclick="robotDemSaveConfig()">Sauvegarder</a>
             </div>`;
         document.body.appendChild(container);
+
+        [...document.querySelectorAll("input[type='radio'][name='robotDemLoadingType']")].forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelector("#robotDemXLSData").disabled = (document.querySelector("#robotDemGeneric").checked);
+            })
+          });
+
     }
 
     if (window.gapiLoaded) {
