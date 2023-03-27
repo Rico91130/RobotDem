@@ -82,13 +82,13 @@ async function initRoboDem() {
         container.style = "z-index:200;display:none;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
         container.id = "modalSetup";
         container.innerHTML = `
-            <div style="position:relative;margin: 0 auto;top:30%;width:700px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
+            <div style="position:relative;margin: 0 auto;top:30%;width:1000px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
                 <input name="robotDemLoadingType" type="radio" id="robotDemGeneric"value="robotDemGeneric">
-                    <label for="robotDemGeneric">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
+                    <label for="robotDemGeneric" onclick="document.querySelector('#robotDemXLSData').disabled=true">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
                 <br/>
                 <input name="robotDemLoadingType" type="radio" id="robotDemForceCustom"value="robotDemForceCustom">
-                    <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
-                    <textarea id="XLSData" style="width:90%; margin:auto;display:block"></textarea>
+                    <label for="robotDemForceCustom"  onclick="document.querySelector('#robotDemXLSData').disabled=false">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
+                    <textarea id="robotDemXLSData" style="width:90%; margin:auto;display:block"></textarea>
                 <a href="#" onclick="robotDemSaveConfig()">Sauvegarder</a>
             </div>`;
         document.body.appendChild(container);
@@ -374,8 +374,18 @@ function loadScenario() {
 
     /* Si window.RobotDemDisplaySetup == true, on affiche la configuration */
     if (window.RobotDemDisplaySetup) {
+
+        /* Mise à jour de l'état des composants */
+        if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1") {
+            document.querySelector("#robotDemForceCustom").checked = true;
+            document.querySelector("#robotDemXLSData").disabled = false;
+        } else {
+            document.querySelector("#robotDemGeneric").checked = true;
+            document.querySelector("#robotDemXLSData").disabled = true;
+        }
+
         document.querySelector("#modalSetup").style["display"] = "block";
-        document.querySelector("#XLSData").value = sessionStorage.getItem("RobotDem.scenarioDataRaw");
+        document.querySelector("#robotDemXLSData").value = sessionStorage.getItem("RobotDem.scenarioDataRaw");
     } else {
         if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
             sessionStorage.getItem("RobotDem.scenarioData") != null) {
@@ -399,7 +409,7 @@ function robotDemSaveConfig()
 
     if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1")
     {
-        var rawData = document.querySelector("#XLSData").value;
+        var rawData = document.querySelector("#robotDemXLSData").value;
         var data = {
             "result" : {
                 "values" : rawData.split("\n").map(x => x.trim().split("\t"))
