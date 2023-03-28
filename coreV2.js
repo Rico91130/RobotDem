@@ -55,6 +55,7 @@ async function initializeRessources() {
         container.id = "modalSetup";
         container.innerHTML = `
             <div style="position:relative;padding:10px;margin: 0 auto;top:30%;width:1000px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
+                <div style="padding:4px;background-color: #ffdbdb;border: 1px solid #908c8c;border-radius: 5px; display:none" id="robotDemWarningMsg"></div>
                 <input name="robotDemLoadingType" type="radio" id="robotDemGeneric"value="robotDemGeneric">
                     <label for="robotDemGeneric">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
                 <br/>
@@ -335,23 +336,50 @@ async function executeScenario(data) {
     toast("success", "Fin d'exécution", "L'exécution est terminée");
 }
 
+function hideSetupPopIn() {
+    document.querySelector("#modalSetup").style["display"] = "none";
+}
+
+function showSetupPopIn(customMessage) {
+    window.RobotDemDisplaySetup = false;
+
+    /* Mise à jour de l'état des composants */
+    if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1") {
+        document.querySelector("#robotDemForceCustom").checked = true;
+        document.querySelector("#robotDemXLSData").disabled = false;
+    } else {
+        document.querySelector("#robotDemGeneric").checked = true;
+        document.querySelector("#robotDemXLSData").disabled = true;
+    }
+
+    if (customMessage != null) {
+        document.querySelector("#robotDemWarningMsg").innerHTML = customMessage;
+        document.querySelector("#robotDemWarningMsg").style["display"] = "block";
+    } else {
+        document.querySelector("#robotDemWarningMsg").style["display"] = "none";
+    }
+
+    document.querySelector("#modalSetup").style["display"] = "block";
+    document.querySelector("#robotDemXLSData").value = sessionStorage.getItem("RobotDem.scenarioDataRaw");
+}
+
 function loadScenario() {
 
     /* Si window.RobotDemDisplaySetup == true, on affiche la configuration */
     if (window.RobotDemDisplaySetup) {
+        showSetupPopIn();
 
-        /* Mise à jour de l'état des composants */
-        if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1") {
-            document.querySelector("#robotDemForceCustom").checked = true;
-            document.querySelector("#robotDemXLSData").disabled = false;
-        } else {
-            document.querySelector("#robotDemGeneric").checked = true;
-            document.querySelector("#robotDemXLSData").disabled = true;
-        }
+    /* Si on constate qu'on est en scénario personnalisé mais que les urls ne matchent pas */
+    } else if ( sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
+                sessionStorage.getItem("RobotDem.scenarioOrigin") != document.location.href.split("?")[0]){
+        var customMessage = null;
 
-        document.querySelector("#modalSetup").style["display"] = "block";
-        document.querySelector("#robotDemXLSData").value = sessionStorage.getItem("RobotDem.scenarioDataRaw");
+        showSetupPopIn(`Attention,
+                   le scénario personnalisé que vous allez exécuter à été défini pour l'url <b>${sessionStorage.getItem("RobotDem.scenarioOrigin")}</b><br/>
+                   Vous allez l'utiliser pour l'url <b>${document.location.href.split("?")[0]}</b>.<br/>
+                   Merci de confirmer en sauvegardant à nouveau le scénario personnalisé.`);
 
+    /* Exécution d'un scénario */
     } else {
         if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
             sessionStorage.getItem("RobotDem.scenarioData") != null) {
@@ -419,8 +447,8 @@ function loadScenario() {
 }
 
 function robotDemSaveConfig() {
-    window.RobotDemDisplaySetup = false;
-    document.querySelector("#modalSetup").style["display"] = "none";
+
+    hideSetupPopIn();
     sessionStorage.setItem("RobotDem.executeFromXLS", document.querySelector("input[type='radio'][name='robotDemLoadingType']:checked").value == "robotDemForceCustom" ? "1" : "0");
 
     if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1") {
@@ -432,6 +460,7 @@ function robotDemSaveConfig() {
         };
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
         sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
+        sessionStorage.setItem("RobotDem.scenarioOrigin", document.location.href.split("?")[0]);
 
         window.scenario = null;
         window.sheetId = null;       
