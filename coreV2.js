@@ -65,7 +65,7 @@ async function initializeRessources() {
                         <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
                         <textarea id="robotDemXLSData" style="white-space: nowrap;overflow:scroll;width:90%; margin:auto;display:block;height:200px;font-family:courier, courier new, serif;"></textarea>
                 </fieldset>
-                <fieldset>
+                <br/><br/><fieldset>
                     <h4 style="display:inline">Outils</h4><br/>
                     <a href="#" onclick="robotDemGetFields()">[Extraire les champs du formulaire]</a><br/>
                 </fieldset>
