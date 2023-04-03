@@ -93,11 +93,14 @@ async function initializeRessources() {
 
 function robotDemGetFields() {
     var clipboard = [];
-    [...document.querySelectorAll("select,input[id]:not([type='hidden'])")
+    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")
     ].filter(e => ![
         "delaiExpiration",
         "urlReprise",
-        "demarche-release"
+        "demarche-release",
+        "robotDemGeneric",
+        "robotDemForceCustom",
+        "robotDemXLSData"
     ].includes(e.id)).forEach(input => {
         clipboard.push( 
             input.type + "\t#" +
