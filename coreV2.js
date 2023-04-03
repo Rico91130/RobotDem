@@ -93,8 +93,12 @@ async function initializeRessources() {
 
 function robotDemGetFields() {
     var clipboard = [];
-    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")
-    ].filter(e => ![
+    var i = 0;
+    var etape = getContext().etape;
+    clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display")].join("\t"));
+    
+    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e =>
+    ![
         "delaiExpiration",
         "urlReprise",
         "demarche-release",
@@ -102,11 +106,18 @@ function robotDemGetFields() {
         "robotDemForceCustom",
         "robotDemXLSData"
     ].includes(e.id)).forEach(input => {
-        clipboard.push( 
-            input.type + "\t#" +
-            input.id + "\t" +
-            [...input.parentElement.querySelectorAll("span")
-        ].map(x => x.innerText.trim()).join(""));
+        clipboard.push([
+                        ++i,
+                        etape,
+                        "TRUE",
+                        "",
+                        input.type,
+                        "#"  + input.id,
+                        "0",
+                        "0",
+                        "",
+                        [...input.parentElement.querySelectorAll("span")].map(x => x.innerText.trim()).join("")],
+                        );
     });
     navigator.clipboard.writeText(clipboard.join("\r\n"));
     toast("success", "Extraire les champs de formulaire", "Les données ont été mises dans le presse papier");
