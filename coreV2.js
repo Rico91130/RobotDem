@@ -95,7 +95,7 @@ function robotDemGetFields() {
     var clipboard = [];
     var i = 0;
     var etape = getContext().etape;
-    clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display")].join("\t"));
+    clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
     
     [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e =>
     ![
