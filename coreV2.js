@@ -65,7 +65,8 @@ async function initializeRessources() {
                         <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
                         <textarea id="robotDemXLSData" style="white-space: nowrap;overflow:scroll;width:90%; margin:auto;display:block;height:200px;font-family:courier, courier new, serif;"></textarea>
                 </fieldset>
-                <br/><br/><fieldset>
+                <br/>
+                <fieldset>
                     <h4 style="display:inline">Outils</h4><br/>
                     <a href="#" onclick="robotDemGetFields()">[Extraire les champs du formulaire]</a><br/>
                 </fieldset>
@@ -88,6 +89,24 @@ async function initializeRessources() {
         /* ... Autrement on peut y aller ! */
         loadScenario();
     }
+}
+
+function robotDemGetFields() {
+    var clipboard = [];
+    [...document.querySelectorAll("select,input[id]:not([type='hidden'])")
+    ].filter(e => ![
+        "delaiExpiration",
+        "urlReprise",
+        "demarche-release"
+    ].includes(e.id)).forEach(input => {
+        clipboard.push( 
+            input.type + "\t#" +
+            input.id + "\t" +
+            [...input.parentElement.querySelectorAll("span")
+        ].map(x => x.innerText.trim()).join(""));
+    });
+    copy(clipboard.join("\r\n"));
+    toast("success", "Extraire les champs de formulaire", "Les données ont été mises dans le presse papier");
 }
 
 var _bypassStep = false;
