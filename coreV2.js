@@ -121,6 +121,7 @@ function robotDemGetField(i, etape, domObj) {
     var actif = "TRUE";
     var exclusif = "";
     var argument = "";
+    var type = domObj.type;
 
     /* Cas des boutons radio */
     if (domObj.type == "radio") {
@@ -129,18 +130,14 @@ function robotDemGetField(i, etape, domObj) {
     }
 
     /* Cas des champs textes */
-    if (domObj.type == "text") {
+    if (domObj.type == "text" || domObj.type == "textarea") {
         argument = domObj.value;
+        type = "textbox";
     }
 
     /* Cas des checkbox */
     if (domObj.type == "checkbox") {
         argument = domObj.checked ? "TRUE" : "FALSE";
-    }
- 
-    /* Cas des checkbox */
-    if (domObj.type == "textarea") {
-        argument = domObj.value;
     }
 
     return [
