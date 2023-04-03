@@ -131,7 +131,13 @@ function robotDemGetField(i, etape, domObj) {
 
     /* Cas des champs textes */
     if (domObj.type == "text" || domObj.type == "textarea") {
+        
         argument = domObj.value;
+        
+        /* Si présence de retour à la ligne, on rajoute des double quotes */
+        if (domObj.indexOf("\n") != -1)
+            argument = '"' + argument + '"';
+
         type = "textbox";
     }
 
