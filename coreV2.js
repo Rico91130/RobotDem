@@ -56,7 +56,7 @@ async function initializeRessources() {
         container.innerHTML = `
             <div style="position:relative;padding:10px;margin: 0 auto;top:30%;width:1000px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
                 <fieldset>
-                    <h4>Choix du scénario</h4>&nbsp;<a href="#" onclick="robotDemSaveConfig()">[Sauvegarder]</a><br/>
+                    <h4 style="display:inline">Choix du scénario</h4>&nbsp;<a href="#" onclick="robotDemSaveConfig()">[Sauvegarder]</a><br/>
                     <div style="padding:4px;background-color: #ffdbdb;border: 1px solid #908c8c;border-radius: 5px; display:none" id="robotDemWarningMsg"></div>
                     <input name="robotDemLoadingType" type="radio" id="robotDemGeneric"value="robotDemGeneric" />
                         <label for="robotDemGeneric">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
@@ -66,7 +66,7 @@ async function initializeRessources() {
                         <textarea id="robotDemXLSData" style="white-space: nowrap;overflow:scroll;width:90%; margin:auto;display:block;height:200px;font-family:courier, courier new, serif;"></textarea>
                 </fieldset>
                 <fieldset>
-                    <h4>Outils</h4><br/>
+                    <h4 style="display:inline">Outils</h4><br/>
                     <a href="#" onclick="robotDemGetFields()">[Extraire les champs du formulaire]</a><br/>
                 </fieldset>
             </div>`;
