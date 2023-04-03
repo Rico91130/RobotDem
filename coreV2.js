@@ -56,7 +56,7 @@ async function initializeRessources() {
         container.innerHTML = `
             <div style="position:relative;padding:10px;margin: 0 auto;top:30%;width:1000px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
                 <fieldset>
-                    <legend>Choix du scénario</legend>
+                    <legend>Choix du scénario</legend> - <a href="#" style="padding:10px;display:block;margin:auto;text-align:center" onclick="robotDemSaveConfig()">Sauvegarder</a>
                     <div style="padding:4px;background-color: #ffdbdb;border: 1px solid #908c8c;border-radius: 5px; display:none" id="robotDemWarningMsg"></div>
                     <input name="robotDemLoadingType" type="radio" id="robotDemGeneric"value="robotDemGeneric" />
                         <label for="robotDemGeneric">Utiliser le référentiel général ou un google spreadsheet personnalisé</label>
@@ -64,7 +64,9 @@ async function initializeRessources() {
                     <input name="robotDemLoadingType" type="radio" id="robotDemForceCustom"value="robotDemForceCustom" />
                         <label for="robotDemForceCustom">Forcer l'utilisation d'un scénario excel (copier/coller) :</label>
                         <textarea id="robotDemXLSData" style="white-space: nowrap;overflow:scroll;width:90%; margin:auto;display:block;height:200px;font-family:courier, courier new, serif;"></textarea>
-                    <a href="#" style="padding:10px;display:block;margin:auto;text-align:center" onclick="robotDemSaveConfig()">Sauvegarder</a>
+                </fieldset>
+                <fieldset>
+                    <legend>Outils</legend>
                 </fieldset>
             </div>`;
         document.body.appendChild(container);
