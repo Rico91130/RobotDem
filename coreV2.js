@@ -107,17 +107,17 @@ function robotDemGetFields() {
         "robotDemXLSData"
     ].includes(e.id)).forEach(input => {
         clipboard.push([
-                        ++i,
-                        etape,
-                        "TRUE",
-                        "",
-                        input.type,
-                        "#"  + input.id,
-                        "0",
-                        "0",
-                        "",
-                        [...input.parentElement.querySelectorAll("span")].map(x => x.innerText.trim()).join("")],
-                        );
+            ++i,
+            etape,
+            "TRUE",
+            "",
+            input.type,
+            "#"  + input.id,
+            "0",
+            "0",
+            "",
+            [...input.parentElement.querySelectorAll("span")].map(
+                x => x.innerText.trim()).join("")].join("\t"));
     });
     navigator.clipboard.writeText(clipboard.join("\r\n"));
     toast("success", "Extraire les champs de formulaire", "Les données ont été mises dans le presse papier");
