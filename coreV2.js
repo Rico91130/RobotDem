@@ -134,9 +134,9 @@ function robotDemGetField(i, etape, domObj) {
         
         argument = domObj.value;
         
-        /* Si présence de retour à la ligne, on rajoute des double quotes */
+        /* Si présence de retour à la ligne, tab ou guillemet, on rajoute des double quotes */
         if (domObj.value.indexOf("\n") != -1 || domObj.value.indexOf("\t") != -1 || domObj.value.indexOf('"') != -1)
-            argument = '"' + argument.replace('"', '""') + '"';
+            argument = '"' + argument.replaceAll('"', '""') + '"';
 
         type = "textbox";
     }
