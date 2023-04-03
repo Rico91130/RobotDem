@@ -113,7 +113,7 @@ function robotDemGetFields() {
     });
 
     navigator.clipboard.writeText(clipboard.join("\r\n"));
-    toast("success", "Extraire les champs de formulaire", "Les données ont été mises dans le presse papier");
+    toast("success", "Extraire les champs de formulaire", "Les données ont été mises dans le presse papier. Vous pouvez les coller dans Excel.");
 }
 
 function robotDemGetField(i, etape, domObj) {
@@ -135,7 +135,7 @@ function robotDemGetField(i, etape, domObj) {
         argument = domObj.value;
         
         /* Si présence de retour à la ligne, on rajoute des double quotes */
-        if (domObj.indexOf("\n") != -1)
+        if (domObj.value.indexOf("\n") != -1)
             argument = '"' + argument + '"';
 
         type = "textbox";
