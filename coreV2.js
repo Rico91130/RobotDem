@@ -138,6 +138,11 @@ function robotDemGetField(i, etape, domObj) {
         argument = domObj.checked ? "TRUE" : "FALSE";
     }
  
+    /* Cas des checkbox */
+    if (domObj.type == "textarea") {
+        argument = domObj.value;
+    }
+
     return [
         ++i,
         etape,
