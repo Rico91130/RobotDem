@@ -206,7 +206,7 @@ class Step {
         }
         /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
         else {
-            this.args = { "value": _args };
+            this.args = { "value" : _args ? _args : ""};
         }
     }
 
