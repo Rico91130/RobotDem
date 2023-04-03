@@ -92,35 +92,65 @@ async function initializeRessources() {
 }
 
 function robotDemGetFields() {
-    var clipboard = [];
-    var i = 0;
-    var etape = getContext().etape;
-    clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
-    
-    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e =>
-    ![
+
+    var excludesId = [
         "delaiExpiration",
         "urlReprise",
         "demarche-release",
         "robotDemGeneric",
         "robotDemForceCustom",
         "robotDemXLSData"
-    ].includes(e.id)).forEach(input => {
-        clipboard.push([
-            ++i,
-            etape,
-            "TRUE",
-            "",
-            input.type,
-            "#"  + input.id,
-            "0",
-            "0",
-            "",
-            [...input.parentElement.querySelectorAll("span")].map(
-                x => x.innerText.trim()).join("")].join("\t"));
+    ];
+
+    var i = 0;
+    var etape = getContext().etape;
+    
+    var clipboard = [];
+    clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
+    
+    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e => !excludesId.includes(e.id)).forEach(input => {
+        clipboard.push(robotDemGetField(++i, etape, input))
     });
+
     navigator.clipboard.writeText(clipboard.join("\r\n"));
     toast("success", "Extraire les champs de formulaire", "Les données ont été mises dans le presse papier");
+}
+
+function robotDemGetField(i, etape, domObj) {
+
+    var actif = "TRUE";
+    var exclusif = "";
+    var argument = "";
+
+    /* Cas des boutons radio */
+    if (domObj.type == "radio") {
+        exclusif  = domObj.name;
+        actif = domObj.checked ? "TRUE" : "FALSE";
+    }
+
+    /* Cas des champs textes */
+    if (domObj.type == "text") {
+        argument = domObj.value;
+    }
+
+    /* Cas des checkbox */
+    if (domObj.type == "checkbox") {
+        argument = domObj.checked ? "TRUE" : "FALSE";
+    }
+ 
+    return [
+        ++i,
+        etape,
+        actif,
+        exclusif,
+        domObj.type,
+        "#"  + domObj.id,
+        "0",
+        "0",
+        argument,
+        [...domObj.parentElement.querySelectorAll("span")].map(
+            x => x.innerText.trim()).join("")
+    ].join("\t");
 }
 
 var _bypassStep = false;
