@@ -105,7 +105,7 @@ function robotDemGetFields() {
             [...input.parentElement.querySelectorAll("span")
         ].map(x => x.innerText.trim()).join(""));
     });
-    copy(clipboard.join("\r\n"));
+    navigator.clipboard.writeText(clipboard.join("\r\n"));
     toast("success", "Extraire les champs de formulaire", "Les données ont été mises dans le presse papier");
 }
 
