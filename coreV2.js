@@ -145,7 +145,7 @@ function robotDemGetField(i, etape, domObj) {
         etape,
         actif,
         exclusif,
-        domObj.type,
+        type,
         "#"  + domObj.id,
         "0",
         "0",
