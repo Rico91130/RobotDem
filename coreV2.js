@@ -529,12 +529,21 @@ function robotDemSaveConfig() {
     sessionStorage.setItem("RobotDem.executeFromXLS", document.querySelector("input[type='radio'][name='robotDemLoadingType']:checked").value == "robotDemForceCustom" ? "1" : "0");
 
     if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1") {
+
         var rawData = document.querySelector("#robotDemXLSData").value;
-        var data = {
-            "result": {
-                "values": rawData.split("\n").map(x => x.trim().split("\t"))
-            }
-        };
+        var data = { "result" : { "values" : []}};
+
+        /* cas simple : pas de double quote */
+        if (rawData.indexOf('"') == -1) {
+            data.result.values = rawData.split("\n").map(x => x.trim().split("\t"))
+        } else {
+            /* cas avec double quote */
+            rawData = rawData.replaceAll('""', "___DOUBLEQUOTES___");
+            rawData = rawData.replaceAll(/"(.*?)"/g, function(a, b){
+                return "__SIMPLEQUOTE__" + b.replaceAll("\r\n", "__NEWLINE__").replaceAll("\t", "__TABULATION__") + "__SIMPLEQUOTE__";
+            });
+            data.result.values = rawData.split("\n").map(x => x.trim().split("\t"));
+        }
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
         sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
         sessionStorage.setItem("RobotDem.scenarioOrigin", document.location.href.split("?")[0]);
