@@ -110,7 +110,7 @@ function robotDemGetFields() {
     clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
     
     [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e => !excludesId.includes(e.id)).forEach(input => {
-        if (input.id != null) // On enregistre pas les champs sans id
+        if (input.id != null && input.offsetHeight > 0) // On enregistre pas les champs sans id ou masqué (offsetHeight == 0)
             clipboard.push(robotDemGetField(++i, etape, input))
     });
 
@@ -150,6 +150,7 @@ function robotDemGetField(i, etape, domObj) {
 
     /* Cas des select-one */
     if (domObj.type == "select-one") {
+        console.log(domObj.id);
         argument = domObj.querySelectorAll("option")[domObj.selectedIndex].text;
         type = "select";
     }
