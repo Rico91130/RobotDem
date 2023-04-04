@@ -523,7 +523,13 @@ function loadScenario() {
     }
 }
 
+function _robotDemNextNCar(car, n, str) {
+    return str.indexOf(car.padStart(n,car));
+}
+
 function robotDemSaveConfig() {
+
+    var escapeCar = '"';
 
     hideSetupPopIn();
     sessionStorage.setItem("RobotDem.executeFromXLS", document.querySelector("input[type='radio'][name='robotDemLoadingType']:checked").value == "robotDemForceCustom" ? "1" : "0");
@@ -534,16 +540,12 @@ function robotDemSaveConfig() {
         var data = { "result" : { "values" : []}};
 
         /* cas simple : pas de double quote */
-        if (rawData.indexOf('"') == -1) {
+        if (rawData.indexOf(escapeCar) == -1) {
             data.result.values = rawData.split("\n").map(x => x.trim().split("\t"))
         } else {
-            /* cas avec double quote */
-            rawData = rawData.replaceAll('""', "___DOUBLEQUOTES___");
-            rawData = rawData.replaceAll(/"(.*?)"/g, function(a, b){
-                return "__SIMPLEQUOTE__" + b.replaceAll("\r\n", "__NEWLINE__").replaceAll("\t", "__TABULATION__") + "__SIMPLEQUOTE__";
-            });
-            data.result.values = rawData.split("\n").map(x => x.trim().split("\t"));
+            
         }
+        
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
         sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
         sessionStorage.setItem("RobotDem.scenarioOrigin", document.location.href.split("?")[0]);
