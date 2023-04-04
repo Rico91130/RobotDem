@@ -110,7 +110,8 @@ function robotDemGetFields() {
     clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
     
     [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e => !excludesId.includes(e.id)).forEach(input => {
-        clipboard.push(robotDemGetField(++i, etape, input))
+        if (input.id != null) // On enregistre pas les champs sans id
+            clipboard.push(robotDemGetField(++i, etape, input))
     });
 
     navigator.clipboard.writeText(clipboard.join("\r\n"));
@@ -124,7 +125,7 @@ function robotDemGetField(i, etape, domObj) {
     var argument = "";
     var type = domObj.type;
 
-    /* Cas des boutons radio */
+    /* Cas des radio */
     if (domObj.type == "radio") {
         exclusif  = domObj.name;
         actif = domObj.checked ? "TRUE" : "FALSE";
@@ -145,6 +146,11 @@ function robotDemGetField(i, etape, domObj) {
     /* Cas des checkbox */
     if (domObj.type == "checkbox") {
         argument = domObj.checked ? "TRUE" : "FALSE";
+    }
+
+    /* Cas des select-one */
+    if (domObj.type == "select-one") {
+        argument = domObj.value;
     }
 
     return [
