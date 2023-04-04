@@ -157,7 +157,7 @@ function robotDemGetField(i, etape, domObj) {
 
     /* Cas des search (TODO : A améliorer) */
     if (domObj.type == "search") {
-        type = "textbox";
+        type = "autocomplete";
         argument = domObj.value;
     }
 
@@ -281,7 +281,13 @@ class Step {
                     /* Traitement initial comme un textbox */
                     this.getItem().click();
                     if (!this.getItem().disabled) {
-                        this.getItem().value = this.args.searchString;
+
+                        /* Dans le cas où c'est un objet JSON en argument */
+                        if (this.args.searchString != null)
+                            this.getItem().value = this.args.searchString;
+                        /* Autrement si c'est une chaine de caractère */
+                        else if (this.args.value != null)
+                            this.getItem().value = this.args.value;
                     }
 
                     /* Déclenchement de l'autocomplete */
@@ -290,10 +296,20 @@ class Step {
                     /* On attent le chargement de la liste de résultat */
                     let _this = this;
                     let interval = setInterval(function () {
-                        if (document.querySelectorAll(_this.args.dropdownItemSelector).length > 0) {
-                            document.querySelectorAll(_this.args.dropdownItemSelector)[_this.args.dropdownItemIndex].click();
-                            _this.done = true;
-                            clearInterval(interval);
+                        /* Cas où la dropdownlist est fournie */
+                        if (_this.args.dropdownItemSelector != null) {
+                            if (document.querySelectorAll(_this.args.dropdownItemSelector).length > 0) {
+                                document.querySelectorAll(_this.args.dropdownItemSelector)[_this.args.dropdownItemIndex].click();
+                                _this.done = true;
+                                clearInterval(interval);
+                            }
+                        /* Autrement recherche par défaut */
+                        } else {
+                            if (_this.parentElement.querySelectorAll(".a11y-suggestions").length > 0) {
+                                _this.parentElement.querySelectorAll(".a11y-suggestions")[0].click();
+                                _this.done = true;
+                                clearInterval(interval);
+                            }  
                         }
                     }, 200);
 
