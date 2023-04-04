@@ -151,7 +151,7 @@ function robotDemGetField(i, etape, domObj) {
     /* Cas des select-one */
     if (domObj.type == "select-one") {
         argument = domObj.value;
-        type = select;
+        type = "select";
     }
 
     return [
