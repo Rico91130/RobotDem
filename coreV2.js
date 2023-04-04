@@ -155,6 +155,12 @@ function robotDemGetField(i, etape, domObj) {
         type = "select";
     }
 
+    /* Cas des search (TODO : A améliorer) */
+    if (domObj.type == "search") {
+        type = "autocomplete";
+        argument = domObj.value;
+    }
+
     return [
         ++i,
         etape,
@@ -163,7 +169,7 @@ function robotDemGetField(i, etape, domObj) {
         type,
         "#"  + domObj.id,
         "0",
-        "0",
+        "100",
         argument,
         [...domObj.parentElement.querySelectorAll("span")].map(
             x => x.innerText.trim()).join("")
