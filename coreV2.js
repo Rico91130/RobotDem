@@ -157,7 +157,7 @@ function robotDemGetField(i, etape, domObj) {
 
     /* Cas des search (TODO : A améliorer) */
     if (domObj.type == "search") {
-        type = "autocomplete";
+        type = "textbox";
         argument = domObj.value;
     }
 
