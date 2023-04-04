@@ -305,8 +305,8 @@ class Step {
                             }
                         /* Autrement recherche par défaut */
                         } else {
-                            if (_this.parentElement.querySelectorAll(".a11y-suggestions").length > 0) {
-                                _this.parentElement.querySelectorAll(".a11y-suggestions")[0].click();
+                            if (_this.getItem().parentElement.querySelectorAll(".a11y-suggestions").length > 0) {
+                                _this.getItem().parentElement.querySelectorAll(".a11y-suggestions")[0].click();
                                 _this.done = true;
                                 clearInterval(interval);
                             }  
