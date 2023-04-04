@@ -293,7 +293,7 @@ class Step {
                     /* Déclenchement de l'autocomplete */
                     this.getItem().dispatchEvent(new Event('input', { bubbles: true }));
 
-                    /* On attent le chargement de la liste de résultat */
+                    /* On attend le chargement de la liste de résultat */
                     let _this = this;
                     let interval = setInterval(function () {
                         /* Cas où la dropdownlist est fournie */
@@ -422,7 +422,13 @@ async function executeScenario(data) {
                     document.querySelector("#modalLoadingMsgNext").style["display"] = "block";
                 }
                 if (steps[i].done || _bypassStep) {
+
+                    /* On simule une sortie de champs */
+                    if (steps[i].done)
+                        steps[i].getItem().dispatchEvent(new Event('blur', { bubbles: true }));
+
                     _bypassStep = false;
+                    
                     resolve();
                     clearInterval(interval);
                 }
