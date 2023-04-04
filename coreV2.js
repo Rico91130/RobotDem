@@ -68,7 +68,7 @@ async function initializeRessources() {
                 <br/>
                 <fieldset>
                     <h4 style="display:inline">Outils</h4><br/>
-                    <a href="#" onclick="robotDemGetFields()">[Extraire les champs du formulaire]</a><br/>
+                    <a href="#" onclick="robotDemGetFields()">[Générer une ébauche de scénario]</a><br/>
                 </fieldset>
             </div>`;
         document.body.appendChild(container);
@@ -545,7 +545,7 @@ function robotDemSaveConfig() {
         } else {
             
         }
-        
+
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
         sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
         sessionStorage.setItem("RobotDem.scenarioOrigin", document.location.href.split("?")[0]);
