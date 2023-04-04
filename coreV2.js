@@ -162,7 +162,7 @@ function robotDemGetField(i, etape, domObj) {
     }
 
     return [
-        ++i,
+        i,
         etape,
         actif,
         exclusif,
@@ -428,7 +428,7 @@ async function executeScenario(data) {
                         steps[i].getItem().dispatchEvent(new Event('blur', { bubbles: true }));
 
                     _bypassStep = false;
-                    
+
                     resolve();
                     clearInterval(interval);
                 }
