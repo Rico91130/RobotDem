@@ -132,7 +132,7 @@ function robotDemGetField(i, etape, domObj) {
     }
 
     /* Cas des champs textes */
-    if ((domObj.type == "text" && !domObj.class.contains("autocomplete")) || domObj.type == "textarea") {
+    if ((domObj.type == "text" && !domObj.classList.contains("autocomplete")) || domObj.type == "textarea") {
         
         argument = domObj.value;
         
@@ -156,7 +156,7 @@ function robotDemGetField(i, etape, domObj) {
     }
 
     /* Cas des search (TODO : A améliorer) */
-    if (domObj.type == "search" || (domObj.type == "text" && domObj.class.contains("autocomplete")))  {
+    if (domObj.type == "search" || (domObj.type == "text" && domObj.classList.contains("autocomplete")))  {
         type = "autocomplete";
         argument = domObj.value;
     }
