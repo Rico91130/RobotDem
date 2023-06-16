@@ -736,6 +736,8 @@ function getContext() {
         "etape": stepId,
         "connected": document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
         "titreDemarche": document.querySelector("h1[class=\"title-section\"]").textContent,
+	"sections" : [...document.querySelectorAll("h2")].map(h2 => h2.innerText),
+	"URLFragment" : (document.location.href.indexOf("#") == -1) ? "" :document.location.href.split("#")[1],
         "codeDemarche": window.location.href.split("/").slice(4, 5)[0]
     }
 }
