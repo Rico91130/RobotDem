@@ -132,7 +132,7 @@ function robotDemGetField(i, etape, domObj) {
     }
 
     /* Cas des champs textes */
-    if (domObj.type == "text" || domObj.type == "textarea") {
+    if ((domObj.type == "text" && !domObj.class.contains("autocomplete")) || domObj.type == "textarea") {
         
         argument = domObj.value;
         
