@@ -295,21 +295,21 @@ class Step {
 
                     /* On attend le chargement de la liste de résultat */
                     let _this = this;
+                    var ulID = null;
+                    var catchULFunction = (e) => {
+                        if (e.relatedNode.nodeName == "UL" && e.srcElement.nodeName == "LI") {
+                            ulID = e.relatedNode.id;
+                        }
+                    }
+                    document.body.addEventListener("DOMNodeInserted", catchULFunction);
+
                     let interval = setInterval(function () {
                         /* Cas où la dropdownlist est fournie */
-                        if (_this.args.dropdownItemSelector != null) {
-                            if (document.querySelectorAll(_this.args.dropdownItemSelector).length > 0) {
-                                document.querySelectorAll(_this.args.dropdownItemSelector)[_this.args.dropdownItemIndex].click();
-                                _this.done = true;
-                                clearInterval(interval);
-                            }
-                        /* Autrement recherche par défaut */
-                        } else {
-                            if (_this.getItem().parentElement.querySelectorAll(".a11y-suggestions").length > 0) {
-                                _this.getItem().parentElement.querySelectorAll(".a11y-suggestions")[0].click();
-                                _this.done = true;
-                                clearInterval(interval);
-                            }  
+                        if (ulID  != null && document.getElementById(ulID).style["display"] != "none" && document.getElementById(ulID).children.length >= _this.args.dropdownItemIndex) {
+                            document.getElementById(ulID).children[_this.args.dropdownItemIndex].click();
+                            document.body.removeEventListener("DOMNodeInserted", catchULFunction); 
+                            _this.done = true;
+                            clearInterval(interval);
                         }
                     }, 200);
 
