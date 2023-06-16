@@ -295,19 +295,22 @@ class Step {
 
                     /* On attend le chargement de la liste de résultat */
                     let _this = this;
-                    var ulID = null;
-                    var catchULFunction = (e) => {
+                    var autocompleteContainer = null;
+                    var catchAutocompleteContainerULFunction = (e) => {
+                        /* Cas UL/LI */
                         if (e.relatedNode.nodeName == "UL" && e.srcElement.nodeName == "LI") {
-                            ulID = e.relatedNode.id;
+                            autocompleteContainer = e.relatedNode;
+                        /* Cas DIV/DIV */
+                        } else if (e.relatedNode.nodeName == "DIV" && e.srcElement.nodeName == "DIV" && e.srcElement.classList.contains("a11y-suggestion")) {
+                            autocompleteContainer = e.relatedNode;
                         }
                     }
-                    document.body.addEventListener("DOMNodeInserted", catchULFunction);
+                    document.body.addEventListener("DOMNodeInserted", catchAutocompleteContainerULFunction);
 
                     let interval = setInterval(function () {
-                        /* Cas où la dropdownlist est fournie */
-                        if (ulID  != null && document.getElementById(ulID).style["display"] != "none" && document.getElementById(ulID).children.length >= _this.args.dropdownItemIndex) {
-                            document.getElementById(ulID).children[_this.args.dropdownItemIndex].click();
-                            document.body.removeEventListener("DOMNodeInserted", catchULFunction); 
+                        if (autocompleteContainer  != null && autocompleteContainer.style["display"] != "none" && autocompleteContainer.children.length >= _this.args.dropdownItemIndex) {
+                            autocompleteContainer.children[_this.args.dropdownItemIndex].click();
+                            document.body.removeEventListener("DOMNodeInserted", catchAutocompleteContainerULFunction); 
                             _this.done = true;
                             clearInterval(interval);
                         }
