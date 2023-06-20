@@ -217,6 +217,7 @@ class Step {
         else
             _args = this._rawArgs.trim();
 
+	console.log(_args);
         /* cas 2 : JSON */
         if (/^{.+}$/g.test(_args)) {
             try {
