@@ -215,7 +215,7 @@ class Step {
         if (/^javascript:.*$/g.test(this._rawArgs))
             _args = eval('(' + this._rawArgs.substr(11) + ')');
         else
-            _args = this._rawArgs.trim();
+            _args = this._rawArgs;
 
 	console.log(_args);
         /* cas 2 : JSON */
@@ -624,13 +624,7 @@ function robotDemSaveConfig() {
 
         var rawData = document.querySelector("#robotDemXLSData").value;
         var data = { "result" : { "values" : []}};
-
-        /* cas simple : pas de double quote */
-        if (rawData.indexOf(escapeCar) == -1) {
-            data.result.values = rawData.split("\n").map(x => x.trim().split("\t"))
-        } else {
-            
-        }
+        data.result.values = rawData.split("\n").map(x => x.trim().split("\t"))
 
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
         sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
