@@ -218,16 +218,19 @@ class Step {
             _args = this._rawArgs;
 
         /* cas 2 : JSON */
-	console.log(_args);
         if (/^{.+}$/g.test(_args)) {
             try {
                 this.args = JSON.parse(_args);
+		console.log(1);
             } catch (e) {
                 this.args = { "value": _args };
-            }
+		console.log(2);
+		console.log(e);
+	    }
         }
         /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
         else {
+		console.log(3);
             this.args = { "value" : _args ? _args : ""};
         }
     }
