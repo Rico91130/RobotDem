@@ -233,7 +233,7 @@ class Step {
 
     getItem() {
         var index = (this.index) ? this.index : 0;
-        return document.querySelectorAll(this.selector)[index];
+        return document.querySelectorAll(this.selector.replaceAll(" ", "&nbsp;"))[index];
     }
 
     async execute() {
