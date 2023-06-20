@@ -158,7 +158,7 @@ function robotDemGetField(i, etape, domObj) {
     /* Cas des search (TODO : A améliorer) */
     if (domObj.type == "search" || (domObj.type == "text" && domObj.classList.contains("autocomplete")))  {
         type = "autocomplete";
-        argument = "{'searchString':'" + domObj.value.replace("'", "\\\'") + "', 'dropdownItemIndex' : 0}";
+        argument = '{"searchString":"' + domObj.value.replace("'", "\\\'") + '", "dropdownItemIndex" : 0}';
     }
 
     return [
