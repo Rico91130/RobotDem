@@ -215,7 +215,7 @@ class Step {
         if (/^javascript:.*$/g.test(this._rawArgs))
             _args = eval('(' + this._rawArgs.substr(11) + ')');
         else
-            _args = this._rawArgs;
+            _args = this._rawArgs.trim();
 
         /* cas 2 : JSON */
         if (/^{.+}$/g.test(_args)) {
