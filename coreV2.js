@@ -105,10 +105,10 @@ function robotDemGetFields() {
 
     var i = 0;
     var etape = getContext().etape;
-    
+
     var clipboard = [];
     clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
-    
+
     [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e => !excludesId.includes(e.id)).forEach(input => {
         if (input.id != null && input.offsetHeight > 0) // On enregistre pas les champs sans id ou masqué (offsetHeight == 0)
             clipboard.push(robotDemGetField(++i, etape, input))
@@ -127,15 +127,15 @@ function robotDemGetField(i, etape, domObj) {
 
     /* Cas des radio */
     if (domObj.type == "radio") {
-        exclusif  = domObj.name;
+        exclusif = domObj.name;
         actif = domObj.checked ? "TRUE" : "FALSE";
     }
 
     /* Cas des champs textes */
     if ((domObj.type == "text" && !domObj.classList.contains("autocomplete")) || domObj.type == "textarea") {
-        
+
         argument = domObj.value;
-        
+
         /* Si présence de retour à la ligne, tab ou guillemet, on rajoute des double quotes */
         if (domObj.value.indexOf("\n") != -1 || domObj.value.indexOf("\t") != -1 || domObj.value.indexOf('"') != -1)
             argument = '"' + argument.replaceAll('"', '""') + '"';
@@ -156,7 +156,7 @@ function robotDemGetField(i, etape, domObj) {
     }
 
     /* Cas des search (TODO : A améliorer) */
-    if (domObj.type == "search" || (domObj.type == "text" && domObj.classList.contains("autocomplete")))  {
+    if (domObj.type == "search" || (domObj.type == "text" && domObj.classList.contains("autocomplete"))) {
         type = "autocomplete";
         argument = '{"searchString":"' + domObj.value.replace("'", "\\\'") + '", "dropdownItemIndex" : 0}';
     }
@@ -167,7 +167,7 @@ function robotDemGetField(i, etape, domObj) {
         actif,
         exclusif,
         type,
-        "#"  + domObj.id,
+        "#" + domObj.id,
         "0",
         "100",
         argument,
@@ -217,22 +217,19 @@ class Step {
         else
             _args = this._rawArgs;
 
-	console.log(_args);
         /* cas 2 : JSON */
         if (/^{.+}$/g.test(_args)) {
             try {
                 this.args = JSON.parse(_args);
-		console.log(1);
             } catch (e) {
                 this.args = { "value": _args };
-		console.log(2);
-		console.log(e);
-	    }
+
+            }
         }
         /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
         else {
-		console.log(3);
-            this.args = { "value" : _args ? _args : ""};
+            console.log(3);
+            this.args = { "value": _args ? _args : "" };
         }
     }
 
@@ -305,7 +302,7 @@ class Step {
                         /* Cas UL/LI */
                         if (e.relatedNode.nodeName == "UL" && e.srcElement.nodeName == "LI") {
                             autocompleteContainer = e.relatedNode;
-                        /* Cas DIV/DIV */
+                            /* Cas DIV/DIV */
                         } else if (e.relatedNode.nodeName == "DIV" && e.srcElement.nodeName == "DIV" && e.srcElement.classList.contains("a11y-suggestion")) {
                             autocompleteContainer = e.relatedNode;
                         }
@@ -313,9 +310,9 @@ class Step {
                     document.body.addEventListener("DOMNodeInserted", catchAutocompleteContainerULFunction);
 
                     let interval = setInterval(function () {
-                        if (autocompleteContainer  != null && autocompleteContainer.style["display"] != "none" && autocompleteContainer.children.length >= _this.args.dropdownItemIndex) {
+                        if (autocompleteContainer != null && autocompleteContainer.style["display"] != "none" && autocompleteContainer.children.length >= _this.args.dropdownItemIndex) {
                             autocompleteContainer.children[_this.args.dropdownItemIndex].click();
-                            document.body.removeEventListener("DOMNodeInserted", catchAutocompleteContainerULFunction); 
+                            document.body.removeEventListener("DOMNodeInserted", catchAutocompleteContainerULFunction);
                             _this.done = true;
                             clearInterval(interval);
                         }
@@ -491,9 +488,9 @@ function loadScenario() {
     if (window.RobotDemDisplaySetup) {
         showSetupPopIn();
 
-    /* Si on constate qu'on est en scénario personnalisé mais que les urls ne matchent pas */
-    } else if ( sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
-                sessionStorage.getItem("RobotDem.scenarioOrigin") != document.location.href.split("?")[0]){
+        /* Si on constate qu'on est en scénario personnalisé mais que les urls ne matchent pas */
+    } else if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
+        sessionStorage.getItem("RobotDem.scenarioOrigin") != document.location.href.split("?")[0]) {
         var customMessage = null;
 
         showSetupPopIn(`Attention,
@@ -501,7 +498,7 @@ function loadScenario() {
                    Vous allez l'utiliser pour l'url <b>${document.location.href.split("?")[0]}</b>.<br/>
                    Merci de confirmer en sauvegardant à nouveau le scénario personnalisé.`);
 
-    /* Exécution d'un scénario */
+        /* Exécution d'un scénario */
     } else {
         if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
             sessionStorage.getItem("RobotDem.scenarioData") != null) {
@@ -569,48 +566,48 @@ function loadScenario() {
 }
 
 function _robotDemNextNCar(car, n, str) {
-    return str.indexOf(car.padStart(n,car));
+    return str.indexOf(car.padStart(n, car));
 }
 
 function tokenizeXLSString(initialString) {
     var DOUBLE_QUOTE = '"';
-	var n = initialString.indexOf(DOUBLE_QUOTE);
-	var inside = false;
-	var tokenizedString = "";
-	if (n == -1) {
-		tokenizedString = initialString;
-	} else {
-		var lastn = 0;
-		while(n != -1) {
-			tokenizedString += initialString.substring(lastn, n);
-			//console.log(n);
-			if (!inside) {
-				//console.log("start string at " + n);
-				inside = true;
-			} else {
-				while(initialString.indexOf(DOUBLE_QUOTE, n + 1) == n+1) {
-					//console.log("quoted double quote at " + n);
-					tokenizedString += "__DOUBLE_QUOTE__";
-					var _lastn = n + 2;
-					n = initialString.indexOf(DOUBLE_QUOTE, n + 2);
-					tokenizedString += initialString.substring(_lastn, n);
-				}
-				if (initialString.indexOf(DOUBLE_QUOTE, n + 1) != n+1) {
-					inside = false;
-					//console.log("end string at " + n);
-				}
-			}
-			lastn = n;
-			n = initialString.indexOf(DOUBLE_QUOTE, lastn + 1); 
-		}
-		tokenizedString += initialString.substring(lastn, n.length);
-	}
-	return tokenizedString.replaceAll(/"([^"]+)"/g, function(input, result) {
+    var n = initialString.indexOf(DOUBLE_QUOTE);
+    var inside = false;
+    var tokenizedString = "";
+    if (n == -1) {
+        tokenizedString = initialString;
+    } else {
+        var lastn = 0;
+        while (n != -1) {
+            tokenizedString += initialString.substring(lastn, n);
+            //console.log(n);
+            if (!inside) {
+                //console.log("start string at " + n);
+                inside = true;
+            } else {
+                while (initialString.indexOf(DOUBLE_QUOTE, n + 1) == n + 1) {
+                    //console.log("quoted double quote at " + n);
+                    tokenizedString += "__DOUBLE_QUOTE__";
+                    var _lastn = n + 2;
+                    n = initialString.indexOf(DOUBLE_QUOTE, n + 2);
+                    tokenizedString += initialString.substring(_lastn, n);
+                }
+                if (initialString.indexOf(DOUBLE_QUOTE, n + 1) != n + 1) {
+                    inside = false;
+                    //console.log("end string at " + n);
+                }
+            }
+            lastn = n;
+            n = initialString.indexOf(DOUBLE_QUOTE, lastn + 1);
+        }
+        tokenizedString += initialString.substring(lastn, n.length);
+    }
+    return tokenizedString.replaceAll(/"([^"]+)"/g, function (input, result) {
         console.log(result);
-		return "__SINGLE_QUOTE__" + 
+        return "__SINGLE_QUOTE__" +
             result.replaceAll("\t", "__TABULATION__").replaceAll("\n", "__RETURN_LINE__") +
-        "__SINGLE_QUOTE__";	
-	});
+            "__SINGLE_QUOTE__";
+    });
 }
 
 function robotDemSaveConfig() {
@@ -623,7 +620,7 @@ function robotDemSaveConfig() {
     if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1") {
 
         var rawData = document.querySelector("#robotDemXLSData").value;
-        var data = { "result" : { "values" : []}};
+        var data = { "result": { "values": [] } };
         data.result.values = rawData.split("\n").map(x => x.trim().split("\t"))
 
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
@@ -631,7 +628,7 @@ function robotDemSaveConfig() {
         sessionStorage.setItem("RobotDem.scenarioOrigin", document.location.href.split("?")[0]);
 
         window.scenario = null;
-        window.sheetId = null;       
+        window.sheetId = null;
     }
 }
 
@@ -735,8 +732,8 @@ function getContext() {
         "etape": stepId,
         "connected": document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
         "titreDemarche": document.querySelector("h1[class=\"title-section\"]").textContent,
-	"sections" : [...document.querySelectorAll("h2")].filter(h2 => h2.offsetHeight > 0).map(h2 => h2.innerText),
-	"URLFragment" : (document.location.href.indexOf("#") == -1) ? "" :document.location.href.split("#")[1],
+        "sections": [...document.querySelectorAll("h2")].filter(h2 => h2.offsetHeight > 0).map(h2 => h2.innerText),
+        "URLFragment": (document.location.href.indexOf("#") == -1) ? "" : document.location.href.split("#")[1],
         "codeDemarche": window.location.href.split("/").slice(4, 5)[0]
     }
 }
