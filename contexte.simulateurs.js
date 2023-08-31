@@ -116,6 +116,13 @@ function _ContextualizedExecute() {
                 }
                 this.done = true;
                 break;
+            case "number":
+                this.getItem().click();
+                if (!this.getItem().disabled) {
+                    this.getItem().value = this.args.value;
+                }
+                this.done = true;
+                break;
             case "textbox":
                 this.getItem().click();
                 if (!this.getItem().disabled) {
