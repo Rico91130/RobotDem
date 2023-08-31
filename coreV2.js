@@ -116,7 +116,7 @@ function robotDemGetFields() {
     ];
 
     var i = 0;
-    var etape = getContext().etape;
+    var etape = getEnvironmentVariables().etape;
 
     var clipboard = [];
     clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
@@ -256,7 +256,7 @@ class Step {
 
 async function executeScenario(data) {
 
-    var context = getContext();
+    var context = getEnvironmentVariables();
 
     if (context.etape == null) {
         toastError("Erreur lors du chargement", "Etape de la démarche non reconnue", 5000);
@@ -391,7 +391,7 @@ function loadScenario() {
             if (sessionStorage.getItem("RobotDem.executeFromXLS") != "1") {
 
                 if (window.scenario == null || window.sheetId == null) {
-                    var context = getContext();
+                    var context = getEnvironmentVariables();
                     var demarche = window.discover.demarches.filter(_demarche => _demarche.hasOwnProperty(context.codeDemarche)).map(x => x[context.codeDemarche]);
 
                     if (demarche.length == 0) {
@@ -600,21 +600,8 @@ function loadScripts() {
 }
 
 
-function getContext() {
-
-    var stepId = document.querySelector("p.current .number");
-    if (stepId != null) {
-        stepId = stepId.textContent;
-    };
-
-    return {
-        "etape": stepId,
-        "connected": document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
-        "titreDemarche": document.querySelector("h1[class=\"title-section\"]").textContent,
-        "sections": [...document.querySelectorAll("h2")].filter(h2 => h2.offsetHeight > 0).map(h2 => h2.innerText),
-        "URLFragment": (document.location.href.indexOf("#") == -1) ? "" : document.location.href.split("#")[1],
-        "codeDemarche": window.location.href.split("/").slice(4, 5)[0]
-    }
+function getEnvironmentVariables() {
+    return _ContextualizedGetEnvironmentVariables();
 }
 
 /* On ne charge qu'une fois les scripts */
