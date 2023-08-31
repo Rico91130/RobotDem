@@ -295,7 +295,7 @@ function loadScenario() {
 
         /* Si on constate qu'on est en scénario personnalisé mais que les urls ne matchent pas */
     } else if (sessionStorage.getItem("RobotDem.executeFromXLS") == "1" &&
-        sessionStorage.getItem("RobotDem.scenarioOrigin") != document.location.href.split("?")[0]) {
+        sessionStorage.getItem("RobotDem.scenarioOrigin") != document.location.href.split("?")[0].split("#")[0]) {
         var customMessage = null;
 
         showSetupPopIn(`Attention,
@@ -430,7 +430,7 @@ function robotDemSaveConfig() {
 
         sessionStorage.setItem("RobotDem.scenarioDataRaw", rawData);
         sessionStorage.setItem("RobotDem.scenarioData", JSON.stringify(data));
-        sessionStorage.setItem("RobotDem.scenarioOrigin", document.location.href.split("?")[0]);
+        sessionStorage.setItem("RobotDem.scenarioOrigin", document.location.href.split("?")[0].split("#")[0]);
 
         window.scenario = null;
         window.sheetId = null;
