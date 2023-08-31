@@ -65,7 +65,11 @@ function _ContextualizedGetFields() {
     var clipboard = [];
     
     var excludesId = [
-        "header-search-input"
+        "header-search-input",
+        "robotDemGeneric",
+        "robotDemForceCustom",
+        "robotDemXLSData"
+
     ];
 
     var i = 0;
