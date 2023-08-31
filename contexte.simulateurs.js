@@ -83,18 +83,24 @@ function _ContextualizedGetFields() {
     
 
 function _ContextualizedGetEnvironmentVariables() {
-    var stepId = document.querySelector("p.current .number");
+    var stepId = document.querySelector(".step-description.legend");
     if (stepId != null) {
-        stepId = stepId.textContent;
-    };
+        var _stepId = /ÉTAPE ([0-9]+)/ig.exec(stepId.textContent);
+        if (Array.isArray(_stepId) && _stepId.length > 2)
+            stepId = /ÉTAPE ([0-9]+)/ig.exec(stepId.textContent)[1];
+        else
+            stepId = "*";
+    } else {
+        stepId = "*";
+    }
 
     return {
         "etape": stepId,
         "connected": document.querySelector("a[title=\"Accès à l'espace personnel\"]") != null,
-        "titreDemarche": document.querySelector("h1[class=\"title-section\"]").textContent,
-        "sections": [...document.querySelectorAll("h2")].filter(h2 => h2.offsetHeight > 0).map(h2 => h2.innerText),
+        "titreDemarche": document.querySelector(".article h1").textContent,
+        "sections": [...document.querySelectorAll("fieldset.fieldset-container>legend")].filter(i => i.offsetHeight > 0).map(i => i.textContent.trim()),
         "URLFragment": (document.location.href.indexOf("#") == -1) ? "" : document.location.href.split("#")[1],
-        "codeDemarche": window.location.href.split("/").slice(4, 5)[0]
+        "codeDemarche": window.location.href.split("/").slice(5, 6)[0].split("#")[0]
     }
 }
 
