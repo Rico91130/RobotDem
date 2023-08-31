@@ -137,6 +137,7 @@ function _ContextualizedExecute() {
                     this.getItem().value = this.args.value;
                 }
                 this.getItem().dispatchEvent(new Event('change', { view : window, bubbles: true }));
+                this.getItem().dispatchEvent(new Event('input', { view : window, bubbles: true }));
                 this.done = true;
                 break;
             case "radio":
