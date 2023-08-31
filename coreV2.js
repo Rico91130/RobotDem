@@ -90,7 +90,7 @@ async function initializeRessources() {
     }
     if (context != null) {
         loadScripts(
-            "https://rico91130.github.io/RobotDem/contexte." + contexte + ".js").then(() => {
+            "https://rico91130.github.io/RobotDem/contexte." + context + ".js").then(() => {
             /* Chargement des API google si besoin ... */
             if (!window.gapiLoaded) {
                 window.gapiLoaded = true;
