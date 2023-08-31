@@ -36,7 +36,7 @@ function _ContextualizedGetField(i, etape, domObj) {
     }
 
     /* combobox */
-    if (domObj.type == "div" && domObj.getAttribute("role") == "combobox" && domObj.classList.contains("input-group")) {
+    if (domObj.tagName == "DIV" && domObj.getAttribute("role") == "combobox" && domObj.classList.contains("input-group")) {
         type = "combobox";
         argument = domObj.querySelector("span.listbox-edit").innerText;
     }
