@@ -430,7 +430,7 @@ async function executeScenario(data) {
                 if (steps[i].done || _bypassStep) {
 
                     /* On simule une sortie de champs */
-                    if (steps[i].done)
+                    if (steps[i].done && steps[i].getItem() != null)
                         steps[i].getItem().dispatchEvent(new Event('blur', { bubbles: true }));
 
                     _bypassStep = false;
