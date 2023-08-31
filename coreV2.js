@@ -267,7 +267,7 @@ async function executeScenario(data) {
 
     // Chargement des objets étapes
     console.log("Chargement des steps de l'étape " + context.etape);
-    var steps = loadSteps(data).filter(x => x.step == context.etape && x.actif == "TRUE")
+    var steps = loadSteps(data).filter(x => (x.step == "*" || x.step == context.etape) && x.actif == "TRUE")
 
     // Récupération des groupes d'exclusivité 
     var groupesExclusive = steps.filter(x => x.exclusif.length > 0).map(x => x.exclusif).filter((value, index, self) => self.indexOf(value) === index)
