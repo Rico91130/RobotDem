@@ -54,7 +54,7 @@ async function initializeRessources() {
         container.style = "z-index:200;display:none;background-color:rgba(0,0,0,0.1);top:0;left:0;position:fixed;width:100%;height:100%";
         container.id = "modalSetup";
         container.innerHTML = `
-            <div style="position:relative;padding:10px;margin: 0 auto;top:30%;width:1000px;background-color:white;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
+            <div style="position:relative;padding:10px;margin: 0 auto;top:30%;width:1000px;background-color:#c2cfda;box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); border-radius: 5px;">
                 <a href="#" onclick="hideSetupPopIn()" style="margin-top:10px;float:right">[ Fermer ]</a><h2>Configuration</h2>
                 <fieldset>
                     <h4 style="display:inline">Choix du scénario</h4>&nbsp;<a href="#" onclick="robotDemSaveConfig()">[ Sauvegarder ]</a><br/>
