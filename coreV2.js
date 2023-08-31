@@ -242,9 +242,10 @@ class Step {
         console.log(this);
         /* On vérifie si il existe bien un item html */
         if (this.getItem() == null) {
-            toastError("Erreur step #" + this.id, "L'objet DOM (" + this.selector + ")[" + this.index + "] n'a pas été trouvé");
+            toastError("Erreur step #" + this.id, "L'objet DOM (" + this.selector + ")[" + this.index + "] n'a pas été trouvé, passe au step suivant.");
+            this.done = true;
         } else {
-
+            
             document.querySelector("#modalLoadingMsgCustom").innerHTML = "id : " + this.id + " - " + this.display;
 
             switch (this.type) {
