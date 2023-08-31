@@ -1,4 +1,4 @@
-function _execute() {
+function _ContextualizedExecute() {
     console.log(this);
     /* On vérifie si il existe bien un item html */
     if (this.getItem() == null) {
