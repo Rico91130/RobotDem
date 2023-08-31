@@ -1,3 +1,29 @@
+function _ContextualizedGetFields() {
+    var clipboard = [];
+    
+    var excludesId = [
+        "delaiExpiration",
+        "urlReprise",
+        "demarche-release",
+        "robotDemGeneric",
+        "robotDemForceCustom",
+        "robotDemXLSData"
+    ];
+
+    var i = 0;
+    var etape = getEnvironmentVariables().etape;
+
+    clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
+
+    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e => !excludesId.includes(e.id)).forEach(input => {
+        if (input.id != null && input.offsetHeight > 0) // On enregistre pas les champs sans id ou masqué (offsetHeight == 0)
+            clipboard.push(robotDemGetField(++i, etape, input))
+    });
+
+    return clipboard;
+}
+    
+
 function _ContextualizedGetEnvironmentVariables() {
     var stepId = document.querySelector("p.current .number");
     if (stepId != null) {
