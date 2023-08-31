@@ -90,7 +90,7 @@ async function initializeRessources() {
     }
     if (context != null) {
         loadScripts(
-            "https://rico91130.github.io/RobotDem/" + context + ".execution.js").then(() => {
+            "https://rico91130.github.io/RobotDem/contexte." + contexte + ".js").then(() => {
             /* Chargement des API google si besoin ... */
             if (!window.gapiLoaded) {
                 window.gapiLoaded = true;
@@ -240,7 +240,6 @@ class Step {
         }
         /* tous les autres cas : chaine de caractère (qu'on met dans un JSON) */
         else {
-            console.log(3);
             this.args = { "value": _args ? _args : "" };
         }
     }
