@@ -86,7 +86,7 @@ function _ContextualizedGetEnvironmentVariables() {
     var stepId = document.querySelector(".step-description.legend");
     if (stepId != null) {
         var _stepId = /ÉTAPE ([0-9]+)/ig.exec(stepId.textContent);
-        if (Array.isArray(_stepId) && _stepId.length > 2)
+        if (Array.isArray(_stepId) && _stepId.length > 1)
             stepId = /ÉTAPE ([0-9]+)/ig.exec(stepId.textContent)[1];
         else
             stepId = "*";
