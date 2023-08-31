@@ -60,12 +60,7 @@ function _ContextualizedGetFields() {
     var clipboard = [];
     
     var excludesId = [
-        "delaiExpiration",
-        "urlReprise",
-        "demarche-release",
-        "robotDemGeneric",
-        "robotDemForceCustom",
-        "robotDemXLSData"
+        "header-search-input"
     ];
 
     var i = 0;
