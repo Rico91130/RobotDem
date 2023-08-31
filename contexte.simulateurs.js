@@ -12,7 +12,7 @@ function _ContextualizedGetField(i, etape, domObj) {
     }
 
     /* Cas des champs textes */
-    if ((domObj.type == "number" && domObj.type == "text" && !domObj.classList.contains("autocomplete")) || domObj.type == "textarea") {
+    if ((domObj.type == "text" && !domObj.classList.contains("autocomplete")) || domObj.type == "textarea") {
 
         argument = domObj.value;
 
