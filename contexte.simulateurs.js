@@ -27,6 +27,10 @@ function _ContextualizedGetField(i, etape, domObj) {
         argument = domObj.value;
         type = "number";
     }
+    if (domObj.type == "money") {
+        argument = domObj.value;
+        type = "money";
+    }
     
     /* Cas des checkbox */
     if (domObj.type == "checkbox") {
@@ -125,15 +129,9 @@ function _ContextualizedExecute() {
                 }
                 this.done = true;
                 break;
-            case "number":
-                this.getItem().click();
-                if (!this.getItem().disabled) {
-                    this.getItem().value = this.args.value;
-                }
-                this.done = true;
-                this.getItem().dispatchEvent(new Event('change', { view : window, bubbles: true }));
-                break;
             case "textbox":
+            case "number":
+            case "money":
                 this.getItem().click();
                 if (!this.getItem().disabled) {
                     this.getItem().value = this.args.value;
