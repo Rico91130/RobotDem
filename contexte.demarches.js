@@ -1,3 +1,61 @@
+function _ContextualizedGetField(i, etape, domObj) {
+    
+    var actif = "TRUE";
+    var exclusif = "";
+    var argument = "";
+    var type = domObj.type;
+
+    /* Cas des radio */
+    if (domObj.type == "radio") {
+        exclusif = domObj.name;
+        actif = domObj.checked ? "TRUE" : "FALSE";
+    }
+
+    /* Cas des champs textes */
+    if ((domObj.type == "text" && !domObj.classList.contains("autocomplete")) || domObj.type == "textarea") {
+
+        argument = domObj.value;
+
+        /* Si présence de retour à la ligne, tab ou guillemet, on rajoute des double quotes */
+        if (domObj.value.indexOf("\n") != -1 || domObj.value.indexOf("\t") != -1 || domObj.value.indexOf('"') != -1)
+            argument = '"' + argument.replaceAll('"', '""') + '"';
+
+        type = "textbox";
+    }
+
+    /* Cas des checkbox */
+    if (domObj.type == "checkbox") {
+        argument = domObj.checked ? "TRUE" : "FALSE";
+    }
+
+    /* Cas des select-one */
+    if (domObj.type == "select-one") {
+        console.log(domObj.id);
+        argument = domObj.querySelectorAll("option")[domObj.selectedIndex].text;
+        type = "select";
+    }
+
+    /* Cas des search (TODO : A améliorer) */
+    if (domObj.type == "search" || (domObj.type == "text" && domObj.classList.contains("autocomplete"))) {
+        type = "autocomplete";
+        argument = '{"searchString":"' + domObj.value.replace("'", "\\\'") + '", "dropdownItemIndex" : 0}';
+    }
+
+    return [
+        i,
+        etape,
+        actif,
+        exclusif,
+        type,
+        "#" + domObj.id,
+        "0",
+        "100",
+        argument,
+        [...domObj.parentElement.querySelectorAll("span")].map(
+            x => x.innerText.trim()).join("")
+    ].join("\t");
+}
+
 function _ContextualizedGetFields() {
     var clipboard = [];
     
