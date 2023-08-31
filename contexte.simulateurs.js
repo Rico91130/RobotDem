@@ -140,6 +140,11 @@ function _ContextualizedExecute() {
                 }
                 this.done = true;
                 break;
+            case "combobox" : 
+                this.getItem().querySelector("a").dispatchEvent(new MouseEvent('mousedown', { view : window, bubbles: true }));
+                [...this.getItem().parentElement.querySelectorAll("ul li")].filter(li => li.innerText == this.args.value)[0].dispatchEvent(new MouseEvent('click', { view : window, bubbles: true }));
+                this.done = true;
+                break;
         }
     }
 }
