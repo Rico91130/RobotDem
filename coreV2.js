@@ -422,7 +422,7 @@ async function executeScenario(data) {
         var timeoutBypassProposed = false;
         await new Promise(resolve => {
             var interval = setInterval(function () {
-                if (Date.now() - timeoutStart > 5000 && !timeoutBypassProposed) {
+                if (Date.now() - timeoutStart > 1000 && !timeoutBypassProposed) {
                     timeoutBypassProposed = true;
                     document.querySelector("#modalLoadingMsgNext").style["display"] = "block";
                 }
