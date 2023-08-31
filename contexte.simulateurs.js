@@ -23,6 +23,11 @@ function _ContextualizedGetField(i, etape, domObj) {
         type = "textbox";
     }
 
+    if (domObj.type == "number") {
+        argument = domObj.value;
+        type = "number";
+    }
+    
     /* Cas des checkbox */
     if (domObj.type == "checkbox") {
         argument = domObj.checked ? "TRUE" : "FALSE";
