@@ -1,3 +1,6 @@
+function _ContextualizedGetVars() {
+}
+
 function _ContextualizedExecute() {
     console.log(this);
     /* On vérifie si il existe bien un item html */
