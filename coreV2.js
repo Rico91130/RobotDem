@@ -105,87 +105,13 @@ async function initializeRessources() {
 }
 
 function robotDemGetFields() {
-
-    var excludesId = [
-        "delaiExpiration",
-        "urlReprise",
-        "demarche-release",
-        "robotDemGeneric",
-        "robotDemForceCustom",
-        "robotDemXLSData"
-    ];
-
-    var i = 0;
-    var etape = getEnvironmentVariables().etape;
-
-    var clipboard = [];
-    clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
-
-    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e => !excludesId.includes(e.id)).forEach(input => {
-        if (input.id != null && input.offsetHeight > 0) // On enregistre pas les champs sans id ou masqué (offsetHeight == 0)
-            clipboard.push(robotDemGetField(++i, etape, input))
-    });
-
+    var clipboard = _ContextualizedGetFields(); 
     navigator.clipboard.writeText(clipboard.join("\r\n"));
     toast("success", "Extraire les champs de formulaire", "Les données ont été mises dans le presse papier. Vous pouvez les coller dans Excel.");
 }
 
 function robotDemGetField(i, etape, domObj) {
-
-    var actif = "TRUE";
-    var exclusif = "";
-    var argument = "";
-    var type = domObj.type;
-
-    /* Cas des radio */
-    if (domObj.type == "radio") {
-        exclusif = domObj.name;
-        actif = domObj.checked ? "TRUE" : "FALSE";
-    }
-
-    /* Cas des champs textes */
-    if ((domObj.type == "text" && !domObj.classList.contains("autocomplete")) || domObj.type == "textarea") {
-
-        argument = domObj.value;
-
-        /* Si présence de retour à la ligne, tab ou guillemet, on rajoute des double quotes */
-        if (domObj.value.indexOf("\n") != -1 || domObj.value.indexOf("\t") != -1 || domObj.value.indexOf('"') != -1)
-            argument = '"' + argument.replaceAll('"', '""') + '"';
-
-        type = "textbox";
-    }
-
-    /* Cas des checkbox */
-    if (domObj.type == "checkbox") {
-        argument = domObj.checked ? "TRUE" : "FALSE";
-    }
-
-    /* Cas des select-one */
-    if (domObj.type == "select-one") {
-        console.log(domObj.id);
-        argument = domObj.querySelectorAll("option")[domObj.selectedIndex].text;
-        type = "select";
-    }
-
-    /* Cas des search (TODO : A améliorer) */
-    if (domObj.type == "search" || (domObj.type == "text" && domObj.classList.contains("autocomplete"))) {
-        type = "autocomplete";
-        argument = '{"searchString":"' + domObj.value.replace("'", "\\\'") + '", "dropdownItemIndex" : 0}';
-    }
-
-    return [
-        i,
-        etape,
-        actif,
-        exclusif,
-        type,
-        "#" + domObj.id,
-        "0",
-        "100",
-        argument,
-        [...domObj.parentElement.querySelectorAll("span")].map(
-            x => x.innerText.trim()).join("")
-    ].join("\t");
+    return _ContextualizedGetField(i, etape, domObj);
 }
 
 var _bypassStep = false;
