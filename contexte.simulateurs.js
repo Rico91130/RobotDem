@@ -35,6 +35,12 @@ function _ContextualizedGetField(i, etape, domObj) {
         type = "select";
     }
 
+    /* combobox */
+    if (domObj.type == "div" && domObj.getAttribute("role" == "combobox") && domObj.classList.contains("input-group")) {
+        type = "combobox";
+        argument = domObj.querySelector("span.listbox-edit").innerText;
+    }
+
     return [
         i,
         etape,
@@ -62,7 +68,7 @@ function _ContextualizedGetFields() {
 
     clipboard.push(["#", "etape", "actif", "exclusif", "type", "selecteur", "index", "delay", "arguments", "Rappel de la question / display"].join("\t"));
 
-    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden'])")].filter(e => !excludesId.includes(e.id)).forEach(input => {
+    [...document.querySelectorAll("textarea, select, input[id]:not([type='hidden']), div[class='input-group'][role='combobox']")].filter(e => !excludesId.includes(e.id)).forEach(input => {
         if (input.id != null && input.offsetHeight > 0) // On enregistre pas les champs sans id ou masqué (offsetHeight == 0)
             clipboard.push(robotDemGetField(++i, etape, input))
     });
