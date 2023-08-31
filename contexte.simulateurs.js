@@ -131,12 +131,14 @@ function _ContextualizedExecute() {
                     this.getItem().value = this.args.value;
                 }
                 this.done = true;
+                this.getItem().dispatchEvent(new Event('change', { view : window, bubbles: true }));
                 break;
             case "textbox":
                 this.getItem().click();
                 if (!this.getItem().disabled) {
                     this.getItem().value = this.args.value;
                 }
+                this.getItem().dispatchEvent(new Event('change', { view : window, bubbles: true }));
                 this.done = true;
                 break;
             case "radio":
