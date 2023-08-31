@@ -202,7 +202,7 @@ async function executeScenario(data) {
     groupesExclusive.forEach(g => {
         if (steps.filter(s => s.exclusif == g).length > 1) {
             groupeExclusiveError = true;
-
+            console.log(steps.filter(s => s.exclusif == g));
             toastError("Erreur d'exclusivité", "Plus d'une règle est active concernant le groupe d'exclusivité '" + g + "'");
         }
     });
