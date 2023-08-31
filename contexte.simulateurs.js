@@ -12,7 +12,7 @@ function _ContextualizedGetField(i, etape, domObj) {
     }
 
     /* Cas des champs textes */
-    if ((domObj.type == "text" && !domObj.classList.contains("autocomplete")) || domObj.type == "textarea") {
+    if ((domObj.type == "text" && !domObj.classList.contains("autocomplete") && domObj.getAttribute("type") != "money") || domObj.type == "textarea") {
 
         argument = domObj.value;
 
@@ -27,7 +27,7 @@ function _ContextualizedGetField(i, etape, domObj) {
         argument = domObj.value;
         type = "number";
     }
-    if (domObj.type == "money") {
+    if (domObj.getAttribute("type") == "money") {
         argument = domObj.value;
         type = "money";
     }
