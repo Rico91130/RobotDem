@@ -190,18 +190,21 @@ function _ContextualizedExecute() {
                 break;
 
             case "asyncUploadTMA":
-
+                console.log("OO");
                 if (this.args.value != null) {
+                    console.log("O1");
                     var fileUrl = this.args.value;
                     var fileName = null;
                     var regExpFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/g;
                     var regExpFileNameExec = regExpFileName.exec("[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/")
                     if (Array.isArray(regExpFileNameExec)) {
+                        console.log("O2");
                         fileName = regExpFileNameExec[0];
                         const request = new XMLHttpRequest();
                         request.open("GET", fileUrl, false);
                         request.send(null);
                         if (request.status === 200) {
+                            console.log("O3");
                             var myFile = getFileFromUrl(this.args.value, fileName);
                             var dataTransfer = new DataTransfer();
                             dataTransfer.items.add(myFile);
