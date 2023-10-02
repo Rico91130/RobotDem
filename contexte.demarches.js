@@ -195,7 +195,7 @@ function _ContextualizedExecute() {
                     var fileUrl = this.args.value;
                     var fileName = null;
                     var regExpFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/g;
-                    var regExpFileNameExec = r.exec("[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/")
+                    var regExpFileNameExec = regExpFileName.exec("[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/")
                     if (Array.isArray(regExpFileNameExec)) {
                         fileName = regExpFileNameExec[0];
                         const request = new XMLHttpRequest();
