@@ -190,26 +190,34 @@ function _ContextualizedExecute() {
                 break;
 
             case "asyncUploadTMA":
-                console.log("OO");
+                console.log("00");
                 if (this.args.value != null) {
-                    console.log("O1");
+                    console.log("01");
                     var fileUrl = this.args.value;
                     var fileName = null;
                     var regExpFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/g;
                     var regExpFileNameExec = regExpFileName.exec(fileUrl);
                     if (Array.isArray(regExpFileNameExec)) {
-                        console.log("O2");
+                        console.log("02");
                         fileName = regExpFileNameExec[0];
                         const request = new XMLHttpRequest();
+                        request.responseType = "arraybuffer";
                         request.open("GET", fileUrl, false);
                         request.send(null);
                         if (request.status === 200) {
-                            console.log("O3");
-                            var myFile = getFileFromUrl(this.args.value, fileName);
-                            var dataTransfer = new DataTransfer();
-                            dataTransfer.items.add(myFile);
-                            this.getItem().files = dataTransfer.files;
-                            this.getItem().dispatchEvent(new Event('change', { view : window, bubbles: true }));
+                            console.log("03");
+                            const arrayBuffer = req.response;
+                            if (arrayBuffer) {
+                                console.log("04");
+                                const byteArray = new Uint8Array(arrayBuffer);
+                                var myFile = new File(byteArray, name, {
+                                    type: data.type || defaultType,
+                                });
+                                var dataTransfer = new DataTransfer();
+                                dataTransfer.items.add(myFile);
+                                this.getItem().files = dataTransfer.files;
+                                this.getItem().dispatchEvent(new Event('change', { view: window, bubbles: true }));
+                            }
                         }
                     }
                     this.done = true;
