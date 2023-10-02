@@ -198,11 +198,16 @@ function _ContextualizedExecute() {
                     var regExpFileNameExec = r.exec("[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/")
                     if (Array.isArray(regExpFileNameExec)) {
                         fileName = regExpFileNameExec[0];
-                        var myFile = getFileFromUrl(this.args.value, fileName);
-                        var dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(myFile);
-                        this.getItem().files = dataTransfer.files;
-                        this.getItem().dispatchEvent(new Event('change', { view : window, bubbles: true }));
+                        const request = new XMLHttpRequest();
+                        request.open("GET", fileUrl, false);
+                        request.send(null);
+                        if (request.status === 200) {
+                            var myFile = getFileFromUrl(this.args.value, fileName);
+                            var dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(myFile);
+                            this.getItem().files = dataTransfer.files;
+                            this.getItem().dispatchEvent(new Event('change', { view : window, bubbles: true }));
+                        }
                     }
                     this.done = true;
                 } else {
@@ -258,11 +263,3 @@ function _ContextualizedExecute() {
         }
     }
 }
-
-async function getFileFromUrl(url, name, defaultType){
-    const response = await fetch(url);
-    const data = await response.blob();
-    return new File([data], name, {
-      type: data.type || defaultType,
-    });
-  }
