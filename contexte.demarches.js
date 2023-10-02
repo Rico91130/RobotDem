@@ -209,8 +209,10 @@ function _ContextualizedExecute() {
                             const arrayBuffer = request.response;
                             if (arrayBuffer) {
                                 console.log("04");
-                                const byteArray = new Uint8Array(arrayBuffer);
-                                var myFile = new File(byteArray, fileName, {
+                               // console.log(arrayBuffer);
+                                //const byteArray = new Uint8Array(arrayBuffer);
+                                //console.log(byteArray);
+                                var myFile = new File(arrayBuffer, fileName, {
                                     type: MIMETYPES[fileExtension]
                                 });
                                 var dataTransfer = new DataTransfer();
