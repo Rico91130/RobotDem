@@ -200,18 +200,18 @@ function _ContextualizedExecute() {
                     if (Array.isArray(regExpFileNameExec)) {
                         console.log("02");
                         fileName = regExpFileNameExec[0];
+                        var fileExtension = fileName.split(".").slice(-1); 
                         const request = new XMLHttpRequest();
-                        request.responseType = "arraybuffer";
                         request.open("GET", fileUrl, false);
                         request.send(null);
                         if (request.status === 200) {
                             console.log("03");
-                            const arrayBuffer = req.response;
+                            const arrayBuffer = request.response;
                             if (arrayBuffer) {
                                 console.log("04");
                                 const byteArray = new Uint8Array(arrayBuffer);
                                 var myFile = new File(byteArray, name, {
-                                    type: data.type || defaultType,
+                                    type: MIMETYPES[fileExtension]
                                 });
                                 var dataTransfer = new DataTransfer();
                                 dataTransfer.items.add(myFile);
@@ -274,3 +274,7 @@ function _ContextualizedExecute() {
         }
     }
 }
+
+const MIMETYPES = {
+    "pdf" : "text/pdf"
+};
