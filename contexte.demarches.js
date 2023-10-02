@@ -1,5 +1,5 @@
 function _ContextualizedGetField(i, etape, domObj) {
-    
+
     var actif = "TRUE";
     var exclusif = "";
     var argument = "";
@@ -41,6 +41,14 @@ function _ContextualizedGetField(i, etape, domObj) {
         argument = '{"searchString":"' + domObj.value.replace("'", "\\\'") + '", "dropdownItemIndex" : 0}';
     }
 
+    /* Cas des upload */
+    if (domObj.type == "file") {
+        if (domObj.classList.contains('resumable-browse')) {
+            type = "asyncUploadTMA";
+        }
+    }
+
+
     return [
         i,
         etape,
@@ -58,7 +66,7 @@ function _ContextualizedGetField(i, etape, domObj) {
 
 function _ContextualizedGetFields() {
     var clipboard = [];
-    
+
     var excludesId = [
         "delaiExpiration",
         "urlReprise",
@@ -80,7 +88,7 @@ function _ContextualizedGetFields() {
 
     return clipboard;
 }
-    
+
 
 function _ContextualizedGetEnvironmentVariables() {
     var stepId = document.querySelector("p.current .number");
@@ -183,25 +191,41 @@ function _ContextualizedExecute() {
 
             case "asyncUploadTMA":
 
-                if (this.getItem().closest(".pslUploadZoneSaisie").style["display"] != "none") {
-
-                    let _this = this;
-
-                    $(window).focus();
-                    $(window).on("focus", function () {
-                        _this.windowFocus = true;
-                    });
-                    this.getItem().click();
-
-                    let interval = setInterval(function () {
-                        if (_this.windowFocus || _this.getItem().closest(".pslUploadZoneSaisie").style["display"] == "none") {
-                            _this.done = true;
-                            clearInterval(interval);
-                        }
-                    }, 100);
-
-                } else {
+                if (this.args.value != null) {
+                    var fileUrl = this.args.value;
+                    var fileName = null;
+                    var regExpFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/g;
+                    var regExpFileNameExec = r.exec("[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/")
+                    if (Array.isArray(regExpFileNameExec)) {
+                        fileName = regExpFileNameExec[0];
+                        var myFile = await getFileFromUrl(this.args.value, fileName);
+                        var dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(myFile);
+                        this.getItem().files = dataTransfer.files;
+                        this.getItem().dispatchEvent(new Event('change', { view : window, bubbles: true }));
+                    }
                     this.done = true;
+                } else {
+                    if (this.getItem().closest(".pslUploadZoneSaisie").style["display"] != "none") {
+
+                        let _this = this;
+
+                        $(window).focus();
+                        $(window).on("focus", function () {
+                            _this.windowFocus = true;
+                        });
+                        this.getItem().click();
+
+                        let interval = setInterval(function () {
+                            if (_this.windowFocus || _this.getItem().closest(".pslUploadZoneSaisie").style["display"] == "none") {
+                                _this.done = true;
+                                clearInterval(interval);
+                            }
+                        }, 100);
+
+                    } else {
+                        this.done = true;
+                    }
                 }
                 break;
 
@@ -234,3 +258,11 @@ function _ContextualizedExecute() {
         }
     }
 }
+
+async function getFileFromUrl(url, name, defaultType){
+    const response = await fetch(url);
+    const data = await response.blob();
+    return new File([data], name, {
+      type: data.type || defaultType,
+    });
+  }
