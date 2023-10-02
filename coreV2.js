@@ -259,7 +259,7 @@ function _ContextualizedExecute() {
     }
 }
 
-function getFileFromUrl(url, name, defaultType){
+async function getFileFromUrl(url, name, defaultType){
     const response = await fetch(url);
     const data = await response.blob();
     return new File([data], name, {
