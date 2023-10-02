@@ -206,13 +206,13 @@ function _ContextualizedExecute() {
                         request.send(null);
                         if (request.status === 200) {
                             console.log("03");
-                            const arrayBuffer = request.response;
-                            if (arrayBuffer) {
+                            const dataBuffer = request.response;
+                            if (dataBuffer) {
                                 console.log("04");
                                // console.log(arrayBuffer);
                                 //const byteArray = new Uint8Array(arrayBuffer);
                                 //console.log(byteArray);
-                                var myFile = new File(arrayBuffer, fileName, {
+                                var myFile = new File([dataBuffer], fileName, {
                                     type: MIMETYPES[fileExtension]
                                 });
                                 var dataTransfer = new DataTransfer();
