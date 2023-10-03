@@ -190,32 +190,32 @@ function _ContextualizedExecute() {
                 break;
 
             case "asyncUploadTMA":
+            
                 if (this.args.value != null) {
                     var fileUrl = this.args.value;
                     var fileName = null;
                     var regExpFileName = /[^/\\&\?]+\.\w{3,4}(?=([\?&].*$|$))/g;
                     var regExpFileNameExec = regExpFileName.exec(fileUrl);
+                    
                     if (Array.isArray(regExpFileNameExec)) {
                         fileName = regExpFileNameExec[0];
-                        var fileExtension = fileName.split(".").slice(-1); 
-                        const request = new XMLHttpRequest();
-                        request.open("GET", fileUrl, false);
-                        request.send(null);
-                        if (request.status === 200) {
-                            const dataBuffer = request.response;
-                            if (dataBuffer) {
-                                var myFile = new File([dataBuffer], fileName, {
-                                    type: MIMETYPES[fileExtension]
-                                });
-                                var dataTransfer = new DataTransfer();
-                                dataTransfer.items.add(myFile);
-                                this.getItem().files = dataTransfer.files;
-                                this.getItem().dispatchEvent(new Event('change', { view: window, bubbles: true }));
-                            }
-                        }
+                        var fileExtension = fileName.split(".").slice(-1);
+
+                        let _this = this;
+                        syncFetchBlob(fileUrl).then(blob => {
+                            var myFile = new File([blob], fileName, {
+                                type: MIMETYPES[fileExtension]
+                            });
+                            var dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(myFile);
+                            this.getItem().files = dataTransfer.files;
+                            this.getItem().dispatchEvent(new Event('change', { view: window, bubbles: true }));
+                            _this.done = true;
+                        });
                     }
-                    this.done = true;
+
                 } else {
+
                     if (this.getItem().closest(".pslUploadZoneSaisie").style["display"] != "none") {
 
                         let _this = this;
@@ -285,4 +285,4 @@ const MIMETYPES = {
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ".ppt": "application/vnd.ms-powerpoint",
     ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-  }
+}
