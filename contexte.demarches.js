@@ -190,7 +190,7 @@ function _ContextualizedExecute() {
                 break;
 
             case "asyncUploadTMA":
-            
+
                 if (this.args.value != null) {
                     var fileUrl = this.args.value;
                     var fileName = null;
@@ -285,4 +285,18 @@ const MIMETYPES = {
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ".ppt": "application/vnd.ms-powerpoint",
     ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+}
+
+async function syncFetchBlob(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Impossible de récupérer le PDF : ${response.statusText}`);
+        }
+
+        const pdfBlob = await response.blob();
+        return pdfBlob;
+    } catch (error) {
+        throw error;
+    }
 }
