@@ -172,7 +172,7 @@ class Step {
 
     getItem() {
         var index = (this.index) ? this.index : 0;
-        return document.querySelectorAll(this.selector.replaceAll(" ", "&nbsp;"))[index];
+        return document.querySelectorAll(this.selector.replaceAll("%00A0%", "\u00a0"))[index];
     }
 
     async execute() {
@@ -374,50 +374,7 @@ function _robotDemNextNCar(car, n, str) {
     return str.indexOf(car.padStart(n, car));
 }
 
-function tokenizeXLSString(initialString) {
-    var DOUBLE_QUOTE = '"';
-    var n = initialString.indexOf(DOUBLE_QUOTE);
-    var inside = false;
-    var tokenizedString = "";
-    if (n == -1) {
-        tokenizedString = initialString;
-    } else {
-        var lastn = 0;
-        while (n != -1) {
-            tokenizedString += initialString.substring(lastn, n);
-            //console.log(n);
-            if (!inside) {
-                //console.log("start string at " + n);
-                inside = true;
-            } else {
-                while (initialString.indexOf(DOUBLE_QUOTE, n + 1) == n + 1) {
-                    //console.log("quoted double quote at " + n);
-                    tokenizedString += "__DOUBLE_QUOTE__";
-                    var _lastn = n + 2;
-                    n = initialString.indexOf(DOUBLE_QUOTE, n + 2);
-                    tokenizedString += initialString.substring(_lastn, n);
-                }
-                if (initialString.indexOf(DOUBLE_QUOTE, n + 1) != n + 1) {
-                    inside = false;
-                    //console.log("end string at " + n);
-                }
-            }
-            lastn = n;
-            n = initialString.indexOf(DOUBLE_QUOTE, lastn + 1);
-        }
-        tokenizedString += initialString.substring(lastn, n.length);
-    }
-    return tokenizedString.replaceAll(/"([^"]+)"/g, function (input, result) {
-        console.log(result);
-        return "__SINGLE_QUOTE__" +
-            result.replaceAll("\t", "__TABULATION__").replaceAll("\n", "__RETURN_LINE__") +
-            "__SINGLE_QUOTE__";
-    });
-}
-
 function robotDemSaveConfig() {
-
-    var escapeCar = '"';
 
     hideSetupPopIn();
     sessionStorage.setItem("RobotDem.executeFromXLS", document.querySelector("input[type='radio'][name='robotDemLoadingType']:checked").value == "robotDemForceCustom" ? "1" : "0");
