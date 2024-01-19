@@ -55,7 +55,7 @@ function _ContextualizedGetField(i, etape, domObj) {
         actif,
         exclusif,
         type,
-        "#" + domObj.id,
+        "#" + domObj.id.replaceAll("\u00a0", "%00A0%"),
         "0",
         "100",
         argument,
