@@ -121,6 +121,7 @@ function _ContextualizedExecute() {
                 if (this.getItem().checked != (this.args.value == "TRUE")) {
                     this.getItem().click();
                 }
+                this.getItem().dispatchEvent(new Event('change', { bubbles: true }));
                 this.done = true;
                 break;
             case "textbox":
@@ -128,14 +129,17 @@ function _ContextualizedExecute() {
                 if (!this.getItem().disabled) {
                     this.getItem().value = this.args.value;
                 }
+                this.getItem().dispatchEvent(new Event('change', { bubbles: true }));
                 this.done = true;
                 break;
             case "radio":
                 this.getItem().click();
+                this.getItem().dispatchEvent(new Event('change', { bubbles: true }));
                 this.done = true;
                 break;
             case "button":
                 this.getItem().click();
+                this.getItem().dispatchEvent(new Event('change', { bubbles: true }));
                 this.done = true;
                 break;
             case "select":
