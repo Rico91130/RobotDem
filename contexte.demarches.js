@@ -293,6 +293,12 @@ const MIMETYPES = {
 
 async function syncFetchBlob(url) {
     try {
+    	var tryURL = new URL(url );
+    	url = tryURL.toString();
+    } catch(e) {
+    	url = "https://rico91130.github.io/RobotDem/ressources/uploadFiles/" + url;
+    };    
+    try {
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`Impossible de récupérer le PDF : ${response.statusText}`);
