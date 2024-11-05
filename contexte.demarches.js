@@ -165,9 +165,6 @@ function _ContextualizedExecute() {
                         this.getItem().value = this.args.value;
                 }
 
-                /* Déclenchement de l'autocomplete */
-                this.getItem().dispatchEvent(new Event('input', { bubbles: true }));
-
                 /* On attend le chargement de la liste de résultat */
                 let _this = this;
                 var autocompleteContainer = null;
@@ -191,6 +188,9 @@ function _ContextualizedExecute() {
                     }
                 }, 200);
 
+                /* Déclenchement de l'autocomplete */
+                this.getItem().dispatchEvent(new Event('input', { bubbles: true }));
+        
                 break;
 
             case "asyncUploadTMA":
